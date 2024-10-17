@@ -42,20 +42,12 @@ function pavMenuGroupTime() {
   //i+=75600 //9pm
 
   let dateTime = new Date();
-let pacificTime = new Intl.DateTimeFormat('en-US', { 
-  timeZone: 'America/Los_Angeles', 
-  hour: 'numeric', 
-  minute: 'numeric', 
-  hour12: false,
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}).formatToParts(dateTime);
+  const utcOffset = -7;
+  dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
+  let day = dateTime.getUTCDay();  // UTC day
+  let hour = dateTime.getUTCHours();  // UTC hour
+  let minute = dateTime.getUTCMinutes(); 
 
-let day = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getDay();
-let hour = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getHours();
-let minute = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getMinutes()
   if(day >= 1 && day <= 5){ // on weekdays
     if (hour < 7){
       i+=25200;
@@ -122,9 +114,11 @@ function dcMenuGroupTime() {
   w.setHours(0,0,0,0);
   let i = Math.floor(w.getTime() / 1000) // current day at time 0
   let dateTime = new Date();
-  let day = dateTime.getDay();
-  let hour = dateTime.getHours();
-  let minute = dateTime.getMinutes();
+  const utcOffset = -7;
+  dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
+  let day = dateTime.getUTCDay();  // UTC day
+  let hour = dateTime.getUTCHours();  // UTC hour
+  let minute = dateTime.getUTCMinutes(); 
   // 10:30 to 2pm, 3pm to 8pm, 9pm to 12am
   if(day >= 1 && day <= 5){
     if ((hour < 10) || (hour <= 10 && minute < 30)){
@@ -163,10 +157,11 @@ function dcMenuGroupTime() {
 function formatTimePAV(){
   let m = [0,0]; // day, category
   let dateTime = new Date();
-  //let today = dateTime.toLocaleDateString('en-US',{weekday: 'long'});
-  let day = dateTime.getDay();
-  let hour = dateTime.getHours();
-  let minute = dateTime.getMinutes();
+  const utcOffset = -7;
+  dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
+  let day = dateTime.getUTCDay();  // UTC day
+  let hour = dateTime.getUTCHours();  // UTC hour
+  let minute = dateTime.getUTCMinutes(); 
   if(day >= 1 && day <= 5){ // on weekdays
     if ((hour < 21) && (hour >= 16)){ // Dinner before 9pm and  after 4pm
       m = [day,2]
@@ -201,10 +196,11 @@ function formatTimePAV(){
 function formatTimeDC(){
   let m = [0,0]; // day, category
   let dateTime = new Date();
-  //let today = dateTime.toLocaleDateString('en-US',{weekday: 'long'});
-  let day = dateTime.getDay();
-  let hour = dateTime.getHours();
-  let minute = dateTime.getMinutes();
+  const utcOffset = -7;
+  dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
+  let day = dateTime.getUTCDay();  // UTC day
+  let hour = dateTime.getUTCHours();  // UTC hour
+  let minute = dateTime.getUTCMinutes(); 
   if(day >= 1 && day <= 5){ // on weekdays
     if ((hour <= 23) && (hour >= 21)){ // late night before 0am and  after 9pm
       m = [day,2]

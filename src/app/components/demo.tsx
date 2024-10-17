@@ -1,5 +1,5 @@
 import React from 'react'
-import { json } from 'stream/consumers';
+import MainCard from './mainCard';
 
 let jsonData: any;
 let idLocation: Array<string>;
@@ -154,9 +154,8 @@ function dcMenuGroupTime() {
   }
   return m;
 }
-function formatTimePAV(){
+function formatTimePAV(dateTime = new Date()){
   let m = [0,0]; // day, category
-  let dateTime = new Date();
   const utcOffset = -7;
   dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
   let day = dateTime.getUTCDay();  // UTC day
@@ -193,9 +192,8 @@ function formatTimePAV(){
   }
   return m;
 }
-function formatTimeDC(){
+function formatTimeDC(dateTime = new Date()){
   let m = [0,0]; // day, category
-  let dateTime = new Date();
   const utcOffset = -7;
   dateTime = new Date(dateTime.getTime() + utcOffset * 60 * 60 * 1000);
   let day = dateTime.getUTCDay();  // UTC day
@@ -253,38 +251,28 @@ function fetchMenu(locationNum: number = 0, dayNum: number = 0, categoryNum: num
 }
 
 const Demo = async () => {
-  let menuParams = formatTimePAV();
+  let menuParams = formatTimePAV(new Date("October 17, 2024 13:13:00"));
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
-  const pavmenuItemNames = pavData.data.menuItems.map((item: any) => item.name);
-  
-  // Fetch DC Menu
-  menuParams = formatTimeDC();
+  const pavMenuItems = pavData.data.menuItems.map((item: any) => ({
+    name: item.name,
+    description: item.description
+  }));
+  menuParams = formatTimeDC(new Date("October 17, 2024 13:13:00"));
   const dcData = await fetchMenu(1, menuParams[0], menuParams[1]);
-  const dcmenuItemNames = dcData.data.menuItems.map((item: any) => item.name);
-  
-  console.log('Pavilion Menu:', pavmenuItemNames);
-  console.log('DC Menu:', dcmenuItemNames);
+  const dcMenuItems = dcData.data.menuItems.map((item: any) => ({
+    name: item.name,
+    description: item.description
+  }));
 
   return (
-    <div className="flex flex-row gap-5">
-      <div>
-        <h2>Pav</h2>
-        <ul>
-          {pavmenuItemNames.map((name: string, index: number) => (
-            <li key={index}>{name}</li>
-          ))}
-        </ul>
+    <>
+      <h1>ucmmm</h1>
+      <div className="snap-mandatory snap-x overflow-x-auto flex gap-5 pl-3 pr-3">
+        <MainCard location="Pav" items={pavMenuItems}/>
+        <MainCard location="DC" items={dcMenuItems}/>
+        <MainCard location="Food Trucks" items={dcMenuItems}/>
       </div>
-      
-      <div>
-        <h2>DC</h2>
-        <ul>
-          {dcmenuItemNames.map((name: string, index: number) => (
-            <li key={index}>{name}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    </>
   )
 }
 

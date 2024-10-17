@@ -262,7 +262,7 @@ const Demo = async () => {
       <div>
         <h2>Pav</h2>
         <ul>
-          {pavmenuItemNames.map((name, index) => (
+          {pavmenuItemNames.map((name: string, index: number) => (
             <li key={index}>{name}</li>
           ))}
         </ul>
@@ -271,7 +271,7 @@ const Demo = async () => {
       <div>
         <h2>DC</h2>
         <ul>
-          {dcmenuItemNames.map((name, index) => (
+          {dcmenuItemNames.map((name: string, index: number) => (
             <li key={index}>{name}</li>
           ))}
         </ul>

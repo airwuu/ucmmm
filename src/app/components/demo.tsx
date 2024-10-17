@@ -41,9 +41,9 @@ function pavMenuGroupTime() {
   //i+=57600 // 4pm
   //i+=75600 //9pm
   let dateTime = new Date();
-  let day = dateTime.getDay();
-  let hour = dateTime.getHours();
-  let minute = dateTime.getMinutes();
+  let day = dateTime.getUTCDay();
+  let hour = dateTime.getUTCHours();
+  let minute = dateTime.getUTCMinutes();
   if(day >= 1 && day <= 5){ // on weekdays
     if (hour < 7){
       i+=25200;

@@ -40,12 +40,22 @@ function pavMenuGroupTime() {
   //i+=54000; //3pm
   //i+=57600 // 4pm
   //i+=75600 //9pm
+
   let dateTime = new Date();
-  let pdtOffset = -7;
-  let localTime = new Date(dateTime.getTime() + pdtOffset * 60 * 60 * 1000);
-  let day = localTime.getDay();
-  let hour = localTime.getHours();
-  let minute = localTime.getMinutes();
+let pacificTime = new Intl.DateTimeFormat('en-US', { 
+  timeZone: 'America/Los_Angeles', 
+  hour: 'numeric', 
+  minute: 'numeric', 
+  hour12: false,
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}).formatToParts(dateTime);
+
+let day = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getDay();
+let hour = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getHours();
+let minute = new Date(pacificTime.map(({ type, value }) => value).join(" ")).getMinutes()
   if(day >= 1 && day <= 5){ // on weekdays
     if (hour < 7){
       i+=25200;

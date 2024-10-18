@@ -266,9 +266,9 @@ const Demo = async () => {
   }));
 
   return (
-    <div>
-      <h1 className="pl-2">ucmmm</h1>
-      <div className="flex snap-mandatory snap-x overflow-x-auto gap-5 pl-2 pr-2">
+    <div className="w-full flex flex-col items-center">
+      <h1 className="">ucmmm</h1>
+      <div className="flex snap-mandatory snap-x overflow-x-auto w-full">
         <MainCard location="Pav" items={pavMenuItems}/>
         <MainCard location="DC" items={dcMenuItems}/>
         <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>

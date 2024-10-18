@@ -251,6 +251,7 @@ function fetchMenu(locationNum: number = 0, dayNum: number = 0, categoryNum: num
 }
 
 const Demo = async () => {
+  // let menuParams = formatTimePAV(new Date("October 17, 2024 13:13:00"));
   let menuParams = formatTimePAV(new Date("October 17, 2024 13:13:00"));
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
   const pavMenuItems = pavData.data.menuItems.map((item: any) => ({
@@ -265,14 +266,14 @@ const Demo = async () => {
   }));
 
   return (
-    <>
-      <h1>ucmmm</h1>
-      <div className="snap-mandatory snap-x overflow-x-auto flex gap-5 pl-5 pr-5">
+    <div>
+      <h1 className="pl-2">ucmmm</h1>
+      <div className="flex snap-mandatory snap-x overflow-x-auto gap-5 pl-2 pr-2">
         <MainCard location="Pav" items={pavMenuItems}/>
         <MainCard location="DC" items={dcMenuItems}/>
-        <MainCard location="Food Trucks" items={dcMenuItems}/>
+        <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>
       </div>
-    </>
+    </div>
   )
 }
 

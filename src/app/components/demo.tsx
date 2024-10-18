@@ -252,13 +252,13 @@ function fetchMenu(locationNum: number = 0, dayNum: number = 0, categoryNum: num
 
 const Demo = async () => {
   // let menuParams = formatTimePAV(new Date("October 17, 2024 13:13:00"));
-  let menuParams = formatTimePAV(new Date("October 17, 2024 13:13:00"));
+  let menuParams = formatTimePAV(new Date());
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
   const pavMenuItems = pavData.data.menuItems.map((item: any) => ({
     name: item.name,
     description: item.description
   }));
-  menuParams = formatTimeDC(new Date("October 17, 2024 13:13:00"));
+  menuParams = formatTimeDC(new Date());
   const dcData = await fetchMenu(1, menuParams[0], menuParams[1]);
   const dcMenuItems = dcData.data.menuItems.map((item: any) => ({
     name: item.name,

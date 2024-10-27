@@ -1,5 +1,5 @@
 import React from 'react'
-import MainCard from './mainCard';
+import Container from './container'
 
 let jsonData: any;
 let idLocation: Array<string>;
@@ -259,6 +259,7 @@ const Demo = async () => {
     description: item.description
   }));
   menuParams = formatTimeDC(new Date());
+  // menuParams = formatTimeDC(new Date("October 17, 2024 13:13:00"));
   const dcData = await fetchMenu(1, menuParams[0], menuParams[1]);
   const dcMenuItems = dcData.data.menuItems.map((item: any) => ({
     name: item.name,
@@ -266,14 +267,7 @@ const Demo = async () => {
   }));
 
   return (
-    <div className="w-full">
-      <div className="flex snap-mandatory snap-x overflow-x-auto w-full px-36 gap-3">
-        <MainCard location="Pav" items={pavMenuItems}/>
-        <MainCard location="DC" items={dcMenuItems}/>
-        <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>
-      </div>
-      
-    </div>
+    <Container pavMenuItems={pavMenuItems} dcMenuItems={dcMenuItems}></Container>
   )
 }
 

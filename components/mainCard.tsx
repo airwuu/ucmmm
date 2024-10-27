@@ -14,8 +14,11 @@ const MainCard: React.FC<MainCardProps> = ({location, items}) => {
             {items.map((item:any, index:any) => (
             <li key={index}>
                 <div className="text-sm">
-                    <strong>{item.name}</strong> <br />
-                    <p className="text-[#9b9ea1]">{item.description}</p>
+                    <div className="flex gap-2">
+                      <strong>{item.name}</strong> 
+                      <p className="">{(item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")}</p>
+                    </div>
+                    <p className="text-[#9b9ea1]">{item.description.replace(/^[^:]*:\s*/, "")}</p>
                 </div>
             </li>
             ))}
@@ -25,15 +28,15 @@ const MainCard: React.FC<MainCardProps> = ({location, items}) => {
         <Button 
           variant="bordered" 
         >
-          Open Menu
+          Test
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
-        <DropdownItem key="new">New file</DropdownItem>
-        <DropdownItem key="copy">Copy link</DropdownItem>
-        <DropdownItem key="edit">Edit file</DropdownItem>
+        <DropdownItem key="new">test</DropdownItem>
+        <DropdownItem key="copy">test</DropdownItem>
+        <DropdownItem key="edit">test</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
-          Delete file
+          test
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

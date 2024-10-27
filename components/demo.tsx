@@ -1,5 +1,5 @@
 import React from 'react'
-import MainCard from './app/components/mainCard';
+import MainCard from './mainCard';
 
 let jsonData: any;
 let idLocation: Array<string>;

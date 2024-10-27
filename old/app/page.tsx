@@ -1,4 +1,4 @@
-import Demo from "../demo"
+import Demo from "../../components/demo"
 
 import * as React from "react";
 

@@ -1,6 +1,7 @@
 "use client"
 import * as React from 'react'
 import {Card, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
+import gemini from "@/components/gemini"
 interface MainCardProps{
     location: string;
     items: any;
@@ -16,9 +17,8 @@ const MainCard: React.FC<MainCardProps> = ({location, items}) => {
                 <div className="text-sm">
                     <div className="flex gap-2">
                       <strong>{item.name}</strong> 
-                      <p className="">{(item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")}</p>
                     </div>
-                    <p className="text-[#9b9ea1]">{item.description.replace(/^[^:]*:\s*/, "")}</p>
+                    <p className="text-[#9b9ea1]">{item.description}</p>
                 </div>
             </li>
             ))}

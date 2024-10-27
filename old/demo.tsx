@@ -1,5 +1,5 @@
 import React from 'react'
-import MainCard from './mainCard';
+import MainCard from './app/components/mainCard';
 
 let jsonData: any;
 let idLocation: Array<string>;
@@ -273,6 +273,7 @@ const Demo = async () => {
         <MainCard location="DC" items={dcMenuItems}/>
         <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>
       </div>
+      
     </div>
   )
 }

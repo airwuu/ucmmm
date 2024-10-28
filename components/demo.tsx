@@ -4,8 +4,8 @@ import {pavMenuGroupTime, formatTimePAV, fetchMenu, formatTimeDC, dcMenuGroupTim
 import gemini from "@/components/functions/gemini"
 
 const Demo = async () => {
-  const date = new Date("October 17, 2024 13:13:00")
-  // const date = new Date()
+  // const date = new Date("October 17, 2024 13:13:00")
+  const date = new Date()
   let menuParams = formatTimePAV(date);
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
   const pavMenuItems = pavData.data.menuItems.map((item: any) => ({

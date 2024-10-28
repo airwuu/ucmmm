@@ -56,8 +56,7 @@ export function pavMenuGroupTime(dateTime = new Date()) {
     let hour = dateTime.getUTCHours();  // UTC hour
     let minute = dateTime.getUTCMinutes(); 
     let w = new Date();
-    w.setHours(0,0,0,0);
-    w = new Date(w.getTime() + utcOffset * 60 * 60 * 1000)
+    w.setHours(7,0,0,0);
     let i = Math.floor(w.getTime() / 1000)
     if(day >= 1 && day <= 5){ // on weekdays
       if (hour < 7){

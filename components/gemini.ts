@@ -26,10 +26,10 @@ export default async function gemini(prompt="") {
     responseMimeType: "text/plain",
     };
 
-    console.log("i ran")
+    // console.log("i ran")
     let result = await model.generateContent(prompt);
     let resultText = await result.response.text(); 
-    console.log(resultText)
+    // console.log(resultText)
   
     return (resultText);
   }

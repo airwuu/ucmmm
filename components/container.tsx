@@ -9,15 +9,11 @@ interface containerProps{
 }
 const container: React.FC<containerProps> = ({pavMenuItems,dcMenuItems}) => {
   return (
-    <div className="w-full">
-      <ScrollShadow className="h-full">
-      <div className="flex snap-mandatory snap-x overflow-x-auto w-full px-36 gap-3">
-        <MainCard location="Pav" items={pavMenuItems}/>
-        <MainCard location="DC" items={dcMenuItems}/>
+      <ScrollShadow className="h-full scrollbar-hide flex snap-mandatory snap-x overflow-x-auto w-full px-36 gap-3 py-2">
+        <MainCard location="Pavilion" items={pavMenuItems}/>
+        <MainCard location="YWDC" items={dcMenuItems}/>
         <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>
-      </div>
       </ScrollShadow>
-    </div>
   )
 }
 

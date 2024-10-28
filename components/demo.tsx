@@ -257,14 +257,15 @@ const Demo = async () => {
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
   const pavMenuItems = pavData.data.menuItems.map((item: any) => ({
     name: (item.name + " " +  (item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")),
-    description: gemini(item.description.replace(/^[^:]*:\s*/, ""))
+    // description: gemini(item.description.replace(/^[^:]*:\s*/, ""))
+    description: item.description.replace(/^[^:]*:\s*/, "")
   }));
   // menuParams = formatTimeDC(new Date());
   menuParams = formatTimeDC(new Date("October 17, 2024 13:13:00"));
   const dcData = await fetchMenu(1, menuParams[0], menuParams[1]);
   const dcMenuItems = dcData.data.menuItems.map((item: any) => ({
-    name: item.name,
-    description: item.description
+    name: (item.name + " " +  (item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")),
+    description: item.description.replace(/^[^:]*:\s*/, "")
   }));
 
   return (

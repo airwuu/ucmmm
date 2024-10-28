@@ -6,12 +6,14 @@ import Description from "@/components/description"
 interface MainCardProps{
     location: string;
     items: any;
+    text:string;
 }
 
-const MainCard: React.FC<MainCardProps> = ({location, items}) => {
+const MainCard: React.FC<MainCardProps> = ({location, items, text=""}) => {
   return (
     <Card className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col">
         <h1 className="text-2xl text-violet-400 mb-1">{location}</h1>
+        <div className="text-small">{text}</div>
         <ul>
             {items.map((item:any, index:any) => (
             <li key={index}>

@@ -19,9 +19,12 @@ const description: React.FC<descriptionProps> = ({description}) => {
   .replace(/\bOption\b/gi, ' ')       
   .replace(/\bOptions\b/gi, ' ')    
   .replace(/\bCome\b/gi, ' ')    
-  .replace(/\bComes\b/gi, ' ')  
+  .replace(/\bComes\b/gi, ' ') 
+  .replace(/\bMeal\b/gi, ' ')  
+  .replace(/\bMindful\b/gi, ' ')     
   //split these into different items   
   .replace(/\bOn a\b/gi, ',')  
+  .replace(/\bthe day\b/gi, ',')  
   .replace(/\bOn\b/gi, ',')  
   .replace(/\bOr\b/gi, ',')       
   .replace(/\bAnd\b/gi, ',')       
@@ -31,11 +34,12 @@ const description: React.FC<descriptionProps> = ({description}) => {
   .replace(/w\//g, ',')    //  w/
   
   // format string for further use  
+  .replace(/\. /g, ",") // i cant believe they also typo , as . 
   .split(',')
   .map((item: string) => item.trim()) //remove whitepsace
   .map((item: string) => item.trim().replace(/\.$/, '')) //remove trailing periods
   .filter((item: string) => item !== ''); //remove empty items
-  console.log(items)
+//   console.log(items)
   return (
     <div className="flex flex-wrap gap-1 pt-2">
     {items.map((item: any, index: any) => (

@@ -53,8 +53,8 @@ export default function RootLayout({
                 href=""
                 title="nextui.org homepage"
               >
-                <span className="text-default-600">made with love by</span>
-                <p className="text-primary">ucmmm</p>
+                <span className="text-default-600">made with love by the</span>
+                <p className="text-primary">ucmmm team</p>
               </Link>
             </footer>
           </div>

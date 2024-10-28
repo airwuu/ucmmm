@@ -43,9 +43,7 @@ export function formatRelativeTimestamp(targetTimestamp: number): string {
 }
 export function pavMenuGroupTime(dateTime = new Date()) {
     let m :string;
-    let w = new Date();
-    w.setHours(0,0,0,0);
-    let i = Math.floor(w.getTime() / 1000) // current day
+     // current day
     //i+=25200;//7am
     //i+=37800; // The Pavilion will close (10:30). The Dining Center will open (10:30);
     //i+=39600; // 11am
@@ -57,7 +55,9 @@ export function pavMenuGroupTime(dateTime = new Date()) {
     let day = dateTime.getUTCDay();  // UTC day
     let hour = dateTime.getUTCHours();  // UTC hour
     let minute = dateTime.getUTCMinutes(); 
-  
+    let w = new Date();
+    w.setHours(7,0,0,0);
+    let i = Math.floor(w.getTime() / 1000)
     if(day >= 1 && day <= 5){ // on weekdays
       if (hour < 7){
         i+=25200;

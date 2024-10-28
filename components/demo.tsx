@@ -1,5 +1,6 @@
 import React from 'react'
-import MainCard from './mainCard';
+import Container from './container'
+import gemini from "@/components/gemini"
 
 let jsonData: any;
 let idLocation: Array<string>;
@@ -255,25 +256,20 @@ const Demo = async () => {
   let menuParams = formatTimePAV(new Date());
   const pavData = await fetchMenu(0, menuParams[0], menuParams[1]);
   const pavMenuItems = pavData.data.menuItems.map((item: any) => ({
-    name: item.name,
-    description: item.description
+    name: (item.name + " " +  (item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")),
+    // description: gemini(item.description.replace(/^[^:]*:\s*/, ""))
+    description: item.description.replace(/^[^:]*:\s*/, "")
   }));
   menuParams = formatTimeDC(new Date());
+  // menuParams = formatTimeDC(new Date("October 17, 2024 13:13:00"));
   const dcData = await fetchMenu(1, menuParams[0], menuParams[1]);
   const dcMenuItems = dcData.data.menuItems.map((item: any) => ({
-    name: item.name,
-    description: item.description
+    name: (item.name + " " +  (item.description.includes(":") ? item.description.match(/^[^:]+/)[0] : "")),
+    description: item.description.replace(/^[^:]*:\s*/, "")
   }));
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <h1 className="">ucmmm</h1>
-      <div className="flex snap-mandatory snap-x overflow-x-auto w-full">
-        <MainCard location="Pav" items={pavMenuItems}/>
-        <MainCard location="DC" items={dcMenuItems}/>
-        <MainCard location="Food Trucks (WIP)" items={dcMenuItems}/>
-      </div>
-    </div>
+    <Container pavMenuItems={pavMenuItems} dcMenuItems={dcMenuItems}></Container>
   )
 }
 

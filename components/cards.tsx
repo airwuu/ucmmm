@@ -1,4 +1,4 @@
-import TimeInPDT from "./datetime"
+import Datetime from "./datetime"
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
 const ITEM_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/item";
 
@@ -67,7 +67,7 @@ export default async function Cards() {
 
   return (
     <div className="yay">
-      <TimeInPDT></TimeInPDT>
+      <Datetime></Datetime>
       <h1 className="mb-4 text-2xl">Menu Items by Station</h1>
       {Object.entries(detailedItemsByStation).map(([station, stationItems]) => (
         <div key={station} className="station-section">

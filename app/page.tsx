@@ -1,4 +1,4 @@
-import Demo from "@/components/demo"
+// import Demo from "@/components/demo"
 import Cards from "@/components/cards"
 import { Suspense } from "react";
 

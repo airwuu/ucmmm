@@ -33,8 +33,7 @@ async function fetchItemDetails(itemId: string): Promise<ItemDetail> {
 export default async function Cards(props: any){
     // get dates
     const now = new Date();
-    const sunday=getStartOfWeek(now)
-    const week = getPDTDate(sunday)
+    const week = getPDTDate(getStartOfWeek(new Date(now)))
     const day = getCurrentDay(new Date());
     const mealtime = getCurrentMeal(now, props.location);
     const params = `${BASE_URL}/${week}/${props.location}/${day}/${mealtime}`

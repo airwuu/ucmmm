@@ -38,7 +38,7 @@ export default async function Cards(props: any){
     const day = getCurrentDay(new Date());
     const mealtime = getCurrentMeal(now, props.location);
     const params = `${BASE_URL}/${week}/${props.location}/${day}/${mealtime}`
-    console.log(params)
+    // console.log(params)
     const response = await fetch(params);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 

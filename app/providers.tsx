@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { NextUIProvider } from "@nextui-org/system";
 import { useRouter } from "next/navigation";

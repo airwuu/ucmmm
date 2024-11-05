@@ -47,13 +47,13 @@ export default function RootLayout({
             <main className="container w-full flex-grow overflow-x-hidden">
               {children}
             </main>
-            <footer className="w-full flex items-center justify-center py-3">
+            <footer className="w-full flex items-center justify-center py-1">
               <Link
                 className="flex items-center gap-1 text-current"
-                href=""
-                title="nextui.org homepage"
+                href="/about"
+                title="about"
               >
-                <span className="text-default-600">made with love by the</span>
+                <span className="text-default-600">made by the </span>
                 <p className="text-primary">ucmmm team</p>
               </Link>
             </footer>

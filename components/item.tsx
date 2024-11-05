@@ -13,7 +13,7 @@ const item: React.FC<itemProps> = ({name, reports, id}) => {
         <Button 
           variant="solid" 
           size="sm"
-          className=" text-md font-light max-w-[240px]"
+          className=" text-md font-light max-w-[240px] bg-content4"
           style={{ wordBreak: 'break-all' }}
         >
           {name}
@@ -21,8 +21,8 @@ const item: React.FC<itemProps> = ({name, reports, id}) => {
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions" disabledKeys={["name", "reports", "id"]}>
         <DropdownItem key="name"><b>{name}</b></DropdownItem>
-        <DropdownItem key="reports">Reports: {reports}</DropdownItem>
         <DropdownItem key="id">id: {id}</DropdownItem>
+        <DropdownItem key="reports">Reports: {reports}</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
           Report Missing
         </DropdownItem>

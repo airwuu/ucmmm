@@ -131,18 +131,16 @@ export default function Cards({ name, location }: { name: string; location: stri
     }
 
     return (
-        <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col border-solid border-1">
-            <h1 className="mb-4 text-2xl">{name}</h1>
-            <Datetime location={location} />
-            <div>{params}</div>
+        <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
+            <h1 className="mb-4 text-2xl text-primary/90 font-extrabold">{name}</h1>
             {Object.entries(detailedItemsByStation || {}).map(([station, stationItems]) => (
-                <div key={station} className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
+                <div key={station} className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-content3">
                     <h2 className="text-xl font-semibold mb-2">{station}</h2>
                     <div>
                         <ul className="flex flex-wrap gap-1 pt-2">
                             {stationItems.map((item) => (
                                 <li key={item.item_id} className="item-card flex gap-2">
-                                    <Item 
+                                    <Item
                                         key={item.item_id} 
                                         name={item.name} 
                                         reports={item.missing_reports}
@@ -154,6 +152,11 @@ export default function Cards({ name, location }: { name: string; location: stri
                     </div>
                 </div>
             ))}
+            <div className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
+                <h2 className="text-xl font-semibold mb-2">Beta/Debug Information:</h2>
+                <Datetime location={location} />
+                <div className="text-blue-700 text-small">{(params)}</div>
+            </div>
         </div>
     );
 }

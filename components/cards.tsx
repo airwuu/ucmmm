@@ -1,4 +1,7 @@
 import Datetime from "./datetime"
+import Item from "@/components/item"
+import { getCurrentMeal } from "./functions/meal"
+import { getPDTDate, getStartOfWeek, getCurrentDay, getCurrentHour, getCurrentMinute } from './functions/time';
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
 const ITEM_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/item";
 
@@ -27,61 +30,71 @@ async function fetchItemDetails(itemId: string): Promise<ItemDetail> {
   return itemDetail;
 }
 
-export default async function Cards() {
-  const response = await fetch(`${BASE_URL}/2024-11-03/pav/sunday/breakfast`);
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+export default async function Cards(props: any){
+    // get dates
+    const now = new Date();
+    const sunday=getStartOfWeek(now)
+    const week = getPDTDate(sunday)
+    const day = getCurrentDay(new Date());
+    const mealtime = getCurrentMeal(now, props.location);
+    const params = `${BASE_URL}/${week}/${props.location}/${day}/${mealtime}`
+    console.log(params)
+    const response = await fetch(params);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  if (!response.ok) {
+    if (!response.ok) {
     throw new Error("Failed to fetch posts");
-  }
+    }
 
-  const items = (await response.json()) as Item[];
+    const items = (await response.json()) as Item[];
 
-  // Group items by station
-  const itemsByStation = items.reduce((acc, item) => {
+    // Group items by station
+    const itemsByStation = items.reduce((acc, item) => {
     const station = item.station.trim() || "Uncategorized";
     if (!acc[station]) {
-      acc[station] = [];
+        acc[station] = [];
     }
     acc[station].push(item);
     return acc;
-  }, {} as Record<string, Item[]>);
+    }, {} as Record<string, Item[]>);
 
-  // Fetch details for each item
-  const itemsWithDetails = await Promise.all(
+    // Fetch details for each item
+    const itemsWithDetails = await Promise.all(
     items.map(async (item) => ({
-      ...item,
-      ...(await fetchItemDetails(item.item_id)),
+        ...item,
+        ...(await fetchItemDetails(item.item_id)),
     }))
-  );
+    );
 
-  // Group items with details by station
-  const detailedItemsByStation = itemsWithDetails.reduce((acc, item) => {
-    const station = item.station.trim() || "Uncategorized";
+    // Group items with details by station
+    const detailedItemsByStation = itemsWithDetails.reduce((acc, item) => {
+    const station = item.station.trim() || "Other";
     if (!acc[station]) {
-      acc[station] = [];
+        acc[station] = [];
     }
     acc[station].push(item);
     return acc;
-  }, {} as Record<string, ItemDetail[]>);
+    }, {} as Record<string, ItemDetail[]>);
 
-  return (
-    <div className="yay">
-      <Datetime></Datetime>
-      <h1 className="mb-4 text-2xl">Menu Items by Station</h1>
-      {Object.entries(detailedItemsByStation).map(([station, stationItems]) => (
-        <div key={station} className="station-section">
-          <h2 className="text-xl font-semibold mb-2">{station}</h2>
-          <ul>
-            {stationItems.map((item) => (
-              <li key={item.item_id} className="item-card flex gap-2">
-                <p>{item.name}</p>
-                <p>Reports: {item.missing_reports}</p>
-              </li>
+    return (
+        <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col border-solid border-1 ">
+            <h1 className="mb-4 text-2xl">{props.name}</h1>
+            <Datetime location={props.location}></Datetime>
+            {Object.entries(detailedItemsByStation).map(([station, stationItems]) => (
+            <div key={station} className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
+                <h2 className="text-xl font-semibold mb-2">{station}</h2>
+                <div>
+                    <ul className="flex flex-wrap gap-1 pt-2">
+                    {stationItems.map((item) => (
+                        <li key={item.item_id} className="item-card flex gap-2">
+                            <Item key={item.item_id} name={item.name} reports={item.missing_reports}></Item>
+                        </li>
+                    ))}
+                    </ul>
+                </div>
+            </div>
             ))}
-          </ul>
         </div>
-      ))}
-    </div>
-  );
+
+    );
 }

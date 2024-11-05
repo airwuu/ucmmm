@@ -38,7 +38,6 @@ export default async function Cards(props: any){
     const day = getCurrentDay(new Date());
     const mealtime = getCurrentMeal(now, props.location);
     const params = `${BASE_URL}/${week}/${props.location}/${day}/${mealtime}`
-    // console.log(params)
     const response = await fetch(params);
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -80,6 +79,7 @@ export default async function Cards(props: any){
         <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col border-solid border-1 ">
             <h1 className="mb-4 text-2xl">{props.name}</h1>
             <Datetime location={props.location}></Datetime>
+            <div>{params}</div>
             {Object.entries(detailedItemsByStation).map(([station, stationItems]) => (
             <div key={station} className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
                 <h2 className="text-xl font-semibold mb-2">{station}</h2>

@@ -4,8 +4,9 @@ import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@ne
 interface itemProps{
     name: any;
     reports: any;
+    id : any;
 }
-const item: React.FC<itemProps> = ({name, reports}) => {
+const item: React.FC<itemProps> = ({name, reports, id}) => {
   return (
     <Dropdown backdrop="blur">
       <DropdownTrigger>
@@ -18,9 +19,10 @@ const item: React.FC<itemProps> = ({name, reports}) => {
           {name}
         </Button>
       </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions" disabledKeys={["name", "reports"]}>
+      <DropdownMenu aria-label="Static Actions" disabledKeys={["name", "reports", "id"]}>
         <DropdownItem key="name"><b>{name}</b></DropdownItem>
         <DropdownItem key="reports">Reports: {reports}</DropdownItem>
+        <DropdownItem key="id">id: {id}</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
           Report Missing
         </DropdownItem>

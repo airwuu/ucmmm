@@ -12,7 +12,7 @@ const item: React.FC<itemProps> = ({name, reports}) => {
         <Button 
           variant="solid" 
           size="sm"
-          className=" text-md font-light max-w-[230px]"
+          className=" text-md font-light max-w-[240px]"
           style={{ wordBreak: 'break-all' }}
         >
           {name}

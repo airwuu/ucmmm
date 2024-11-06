@@ -1,5 +1,4 @@
 "use client";
-
 import { useQuery } from "@tanstack/react-query";
 import Datetime from "./datetime";
 import Item from "@/components/item";
@@ -7,7 +6,6 @@ import { getCurrentMeal } from "./functions/meal";
 import { getPDTDate, getStartOfWeek, getCurrentDay } from "./functions/time";
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
-const ITEM_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/item";
 interface MenuItem {
   row_id: number;
   week: string;
@@ -16,23 +14,10 @@ interface MenuItem {
   meal: string;
   station: string;
   item_id: string;
-}
-interface ItemDetail {
-  item_id: string;
   name: string;
   missing_reports: number;
 }
-interface MenuItemWithDetails extends MenuItem, ItemDetail {}
 
-async function fetchItemDetails(itemId: string): Promise<ItemDetail> {
-  const response = await fetch(`${ITEM_URL}/${itemId}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch details for item ${itemId}`);
-  }
-  const data = await response.json();
-  // Return the first item if it's an array, otherwise return the data itself
-  return Array.isArray(data) ? data[0] : data;
-}
 async function fetchMenuItems(location: string) {
   const now = new Date();
   const week = getPDTDate(getStartOfWeek(new Date(now)));
@@ -44,44 +29,9 @@ async function fetchMenuItems(location: string) {
     throw new Error("Failed to fetch menu items");
   }
   const items = (await response.json()) as MenuItem[];
-  // Fetch details for all items in parallel
-  const itemsWithDetails = await Promise.all(
-    items.map(async (item) => {
-      try {
-        const details = await fetchItemDetails(item.item_id);
-        return {
-          ...item,
-          ...details,
-        };
-      } catch (error) {
-        console.error(
-          `Failed to fetch details for item ${item.item_id}:`,
-          error
-        );
-        // Return item with default values if details fetch fails
-        return {
-          ...item,
-          name: "Unknown Item",
-          missing_reports: 0,
-        };
-      }
-    })
-  );
-  // group items by station
-  const detailedItemsByStation = itemsWithDetails.reduce(
-    (acc, item) => {
-      const station = item.station.trim() || "Other";
-      if (!acc[station]) {
-        acc[station] = [];
-      }
-      acc[station].push(item);
-      return acc;
-    },
-    {} as Record<string, MenuItemWithDetails[]>
-  );
-
-  return detailedItemsByStation;
+  return items;
 }
+
 export default function Cards({
   name,
   location,
@@ -90,7 +40,7 @@ export default function Cards({
   location: string;
 }) {
   const {
-    data: detailedItemsByStation,
+    data: menuItems,
     isLoading,
     error,
     refetch,
@@ -101,6 +51,7 @@ export default function Cards({
     refetchOnWindowFocus: true,
     retry: 3,
   });
+
   const now = new Date();
   const week = getPDTDate(getStartOfWeek(new Date(now)));
   const day = getCurrentDay(new Date());
@@ -118,6 +69,7 @@ export default function Cards({
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col border-solid border-1">
@@ -132,6 +84,20 @@ export default function Cards({
       </div>
     );
   }
+
+  // Group items by station
+  const detailedItemsByStation = (menuItems || []).reduce(
+    (acc, item) => {
+      const station = item.station.trim() || "Other";
+      if (!acc[station]) {
+        acc[station] = [];
+      }
+      acc[station].push(item);
+      return acc;
+    },
+    {} as Record<string, MenuItem[]>
+  );
+
   return (
     <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
       <h1 className="mb-4 text-2xl text-primary/90 font-extrabold">{name}</h1>

@@ -11,6 +11,10 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
+      label: "About",
+      href: "/about",
+    },
+    {
       label: "Help & Feedback",
       href: "/help-feedback",
     },

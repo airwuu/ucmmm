@@ -8,7 +8,6 @@ import { getPDTDate, getStartOfWeek, getCurrentDay } from './functions/time';
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
 const ITEM_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/item";
-
 interface MenuItem {
     row_id: number;
     week: string;
@@ -18,13 +17,11 @@ interface MenuItem {
     station: string;
     item_id: string;
 }
-
 interface ItemDetail {
     item_id: string;
     name: string;
     missing_reports: number;
 }
-
 interface MenuItemWithDetails extends MenuItem, ItemDetail {}
 
 async function fetchItemDetails(itemId: string): Promise<ItemDetail> {
@@ -36,21 +33,17 @@ async function fetchItemDetails(itemId: string): Promise<ItemDetail> {
     // Return the first item if it's an array, otherwise return the data itself
     return Array.isArray(data) ? data[0] : data;
 }
-
 async function fetchMenuItems(location: string) {
     const now = new Date();
     const week = getPDTDate(getStartOfWeek(new Date(now)));
     const day = getCurrentDay(new Date());
     const mealtime = getCurrentMeal(now, location);
-    const params = `${BASE_URL}/${week}/${location}/${day}/${mealtime}`;
-    
+    const params = `${BASE_URL}/${week}/${location}/${day}/${mealtime}`
     const response = await fetch(params);
     if (!response.ok) {
         throw new Error("Failed to fetch menu items");
     }
-    
     const items = await response.json() as MenuItem[];
-    
     // Fetch details for all items in parallel
     const itemsWithDetails = await Promise.all(
         items.map(async (item) => {
@@ -71,8 +64,7 @@ async function fetchMenuItems(location: string) {
             }
         })
     );
-
-    // Group items by station
+    // group items by station
     const detailedItemsByStation = itemsWithDetails.reduce((acc, item) => {
         const station = item.station.trim() || "Other";
         if (!acc[station]) {
@@ -84,19 +76,14 @@ async function fetchMenuItems(location: string) {
 
     return detailedItemsByStation;
 }
-
 export default function Cards({ name, location }: { name: string; location: string }) {
     const { data: detailedItemsByStation, isLoading, error, refetch } = useQuery({
         queryKey: ['menu', location, getCurrentMeal(new Date(), location)],
         queryFn: () => fetchMenuItems(location),
-        // Refresh data every 5 minutes
         refetchInterval: 5 * 60 * 1000,
-        // Refresh data when window regains focus
         refetchOnWindowFocus: true,
-        // Retry 3 times before showing error
         retry: 3,
     });
-
     const now = new Date();
     const week = getPDTDate(getStartOfWeek(new Date(now)));
     const day = getCurrentDay(new Date());
@@ -114,7 +101,6 @@ export default function Cards({ name, location }: { name: string; location: stri
             </div>
         );
     }
-
     if (error) {
         return (
             <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col border-solid border-1">
@@ -129,12 +115,11 @@ export default function Cards({ name, location }: { name: string; location: stri
             </div>
         );
     }
-
     return (
         <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
             <h1 className="mb-4 text-2xl text-primary/90 font-extrabold">{name}</h1>
             {Object.entries(detailedItemsByStation || {}).map(([station, stationItems]) => (
-                <div key={station} className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-content3">
+                <div key={station} className="station-section flex flex-col border-1 my-2 p-2 rounded-lg border-foreground/10 bg-content3">
                     <h2 className="text-xl font-semibold mb-2">{station}</h2>
                     <div>
                         <ul className="flex flex-wrap gap-1 pt-2">

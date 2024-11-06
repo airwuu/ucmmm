@@ -18,7 +18,6 @@ const getStartOfWeek = (date: Date): Date => {
   return new Date(date.setDate(diff));
 };
 
-
 interface datetimeProps{
     location: string;
 }

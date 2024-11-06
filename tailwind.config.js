@@ -21,13 +21,14 @@ module.exports = {
       themes: {
         dark: {
           colors: {
-            background:"#100e27",
-            content1:"#26253c", //cards
-            content2:"#100e27", //navbar
-            content3:"#110f24", //stations
-            content4:"#26253c", //items
+            background:"#1c1b1d",
+            content1:"#2a282b", //cards
+            content2:"#1c1b1d", //navbar
+            content3:"#232224", //stations
+            content4:"#4a3730", //items
+            default:"#1c1b1d", // text/github
             primary: {
-              DEFAULT: "#daa900",
+              DEFAULT: "#deaf9d",
               foreground: "#000000",
             },
             focus: "#daa900",
@@ -37,12 +38,12 @@ module.exports = {
           colors: {
             background:"#eeeeee",
             content1:"#fefefe", //cards
-            content2:"#debc4b", //navbar
-            content3:"#ebf3ff", //stations
+            content2:"#D5BDAF", //navbar
+            content3:"#E3D5CA", //stations
             content4:"#fefefe", //items
             default:"#000000",
             primary: {
-              DEFAULT: "#103550",
+              DEFAULT: "#163d59",
               foreground: "#000000",
             },
           },

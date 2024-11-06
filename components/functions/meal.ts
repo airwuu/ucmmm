@@ -4,7 +4,7 @@ export const getCurrentMeal = (date: Date, location: string): string => {
     const hour = parseInt(new Intl.DateTimeFormat('en-US', { ...options, hour: '2-digit' }).format(date), 10);
     const minute = parseInt(new Intl.DateTimeFormat('en-US', { ...options, minute: '2-digit' }).format(date), 10);
 
-    // Convert hour and minute into a single number for easier comparison (e.g., 7:30 -> 730, 15:00 -> 1500)
+    // convert hour and minute into a single number (e.g., 7:30 -> 730, 15:00 -> 1500)
     const currentTime = hour * 100 + minute;
 
     if (location && location == "dc"){
@@ -17,7 +17,6 @@ export const getCurrentMeal = (date: Date, location: string): string => {
         lateNightEnd: 2400    // Midnight (12:00 AM)
       };
   
-      // Only weekday logic (since there's no weekend handling anymore)
       if (currentTime >= weekdayHours.lunchStart && currentTime < weekdayHours.lunchEnd) {
         return 'lunch';
       } else if (currentTime >= weekdayHours.dinnerStart && currentTime < weekdayHours.dinnerEnd) {
@@ -33,7 +32,7 @@ export const getCurrentMeal = (date: Date, location: string): string => {
       }
     }
     else {
-       // Define meal times for weekdays
+       // define meal times for weekdays
     const weekdayHours = {
       breakfastStart: 700,
       breakfastEnd: 1030,
@@ -42,8 +41,7 @@ export const getCurrentMeal = (date: Date, location: string): string => {
       dinnerStart: 1600,
       dinnerEnd: 2100
     };
-  
-    // Define meal times for weekends
+    // define meal times for weekends
     const weekendHours = {
       breakfastStart: 900,
       breakfastEnd: 1030,
@@ -53,10 +51,9 @@ export const getCurrentMeal = (date: Date, location: string): string => {
       dinnerEnd: 2100
     };
   
-    // Select the correct hours based on the day of the week
+    // choose which hours
     const hours = ['saturday', 'sunday'].includes(dayOfWeek) ? weekendHours : weekdayHours;
-  
-    // Determine current or next meal based on time
+
     if (currentTime >= hours.breakfastStart && currentTime < hours.breakfastEnd) {
       return 'breakfast';
     } else if (currentTime >= hours.lunchStart && currentTime < hours.lunchEnd) {

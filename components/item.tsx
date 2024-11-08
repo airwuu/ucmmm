@@ -13,6 +13,15 @@ interface itemProps {
   id: any;
 }
 const item: React.FC<itemProps> = ({ name, reports, id }) => {
+  const getButtonStyle = () => {
+    if (reports >= 2) {
+      return "bg-red-500";
+    } else if (reports === 1) {
+      return "bg-orange-500";
+    }
+    return "bg-content4";
+  };
+
   function report() {
     fetch(`https://ucmmmdb.ucmmm-ucm.workers.dev/item/${id}/missing`, {
       method: "POST",
@@ -20,6 +29,7 @@ const item: React.FC<itemProps> = ({ name, reports, id }) => {
       .then((response) => response.json()) // if expecting a JSON response
       .then((data) => console.log(data))
       .catch((error) => console.error("Error:", error));
+      window.location.reload();
   }
   return (
     <Dropdown backdrop="blur">
@@ -27,7 +37,7 @@ const item: React.FC<itemProps> = ({ name, reports, id }) => {
         <Button
           variant="solid"
           size="sm"
-          className=" text-md font-light max-w-[240px] bg-content4"
+          className={`text-md font-light max-w-[240px] ${getButtonStyle()}`}
           style={{ wordBreak: "break-all" }}
         >
           {name}

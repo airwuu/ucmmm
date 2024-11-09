@@ -20,11 +20,11 @@ const MealStatus = ({ location }: { location: string }) => {
     const diffMinutes = targetMinutes - currentMinutes;
     
     if (diffMinutes <= 60) {
-      return `opens in ${diffMinutes} minutes`;
+      return `in ${diffMinutes} minutes`;
     } else {
       const hours = Math.floor(diffMinutes / 60);
       const minutes = diffMinutes % 60;
-      return `opens in ${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `and ${minutes} minutes` : ''}`;
+      return `in ${hours} hr${hours > 1 ? 's' : ''} ${minutes > 0 ? `and ${minutes} mins` : ''}`;
     }
   }
 
@@ -48,11 +48,10 @@ const MealStatus = ({ location }: { location: string }) => {
     
     for (const [meal, times] of meals) {
       if (currentTimeNum < times.start) {
-        status = formatTimeUntil(times.start);
+        status = `opens ${formatTimeUntil(times.start)}`;
         break;
       } else if (currentTimeNum >= times.start && currentTimeNum < times.end) {
-        const remainingTime = times.end - currentTimeNum;
-        status = `open - closes in ${Math.floor(remainingTime / 100)}h ${remainingTime % 100}m`;
+        status = `open - closes ${formatTimeUntil(times.end)}`;
         break;
       }
     }

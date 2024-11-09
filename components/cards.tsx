@@ -4,6 +4,7 @@ import Datetime from "./datetime";
 import Item from "@/components/item";
 import { getCurrentMeal } from "./functions/meal";
 import { getPDTDate, getStartOfWeek, getCurrentDay } from "./functions/time";
+import MealStatus from "./mealstatus"
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
 interface MenuItem {
@@ -101,6 +102,7 @@ export default function Cards({
   return (
     <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
       <h1 className="mb-4 text-2xl text-primary/90 font-extrabold">{name}</h1>
+      <MealStatus location={location}/>
       {Object.entries(detailedItemsByStation || {}).map(
         ([station, stationItems]) => (
           <div

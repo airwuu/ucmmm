@@ -53,6 +53,8 @@ const MealStatus = ({ location }: { location: string }) => {
       } else if (currentTimeNum >= times.start && currentTimeNum < times.end) {
         status = `open - closes ${formatTimeUntil(times.end)}`;
         break;
+      } else {
+        status = "closed"
       }
     }
     

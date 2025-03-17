@@ -23,7 +23,7 @@ To be more specific, it aims to solve these common complaints from students:
 - inaccurate menu item listings
 - lack of food truck information
 - other missing QOL features
-<details>
+<details open>
 <summary> <h3> Comparison against official menu site</h3> </summary>
 <br>
   <img src="https://github.com/user-attachments/assets/9aeeebdb-fb46-4612-9f64-d006c89aa7fc" 

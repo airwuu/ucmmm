@@ -78,7 +78,7 @@ export default function Cards({
         <div className="text-red-500">Error loading menu data</div>
         <button
           onClick={() => refetch()}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
         >
           Retry
         </button>

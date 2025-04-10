@@ -5,6 +5,7 @@ import Item from "@/components/item";
 import { getCurrentMeal } from "./functions/meal";
 import { getPDTDate, getStartOfWeek, getCurrentDay } from "./functions/time";
 import MealStatus from "./mealstatus"
+import { isOpen } from "./mealstatus"
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
 interface MenuItem {
@@ -100,9 +101,10 @@ export default function Cards({
   );
 
   return (
-    <div className="snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
+    <div className="relative snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] pl-5 pr-5 pt-3 pb-3 flex flex-col bg-content1">
       <h1 className="mb-4 text-2xl text-primary/90 font-extrabold">{name}</h1>
       <MealStatus location={location}/>
+      {!isOpen(location)?<div className="absolute inset-0 rounded-lg z-[100] bg-black/20 w-full h-full"></div>:""}
       {Object.entries(detailedItemsByStation || {}).map(
         ([station, stationItems]) => (
           <div
@@ -114,12 +116,12 @@ export default function Cards({
               <ul className="flex flex-wrap gap-1 pt-2">
                 {stationItems.map((item) => (
                   <li key={item.item_id} className="item-card flex gap-2">
-                    <Item
+                    {<Item
                       key={item.item_id}
                       name={item.name}
                       reports={item.missing_reports}
                       id={item.item_id}
-                    />
+                    />}
                   </li>
                 ))}
               </ul>

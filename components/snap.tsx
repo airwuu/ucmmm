@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import Cards from "@/components/cards";
 import { isOpen } from "./mealstatus"
 
-const snap = () => {
+const Snap = () => {
     // dumb way to autoscroll to an open dc when pav is closed
     const dcCardRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -29,4 +29,4 @@ const snap = () => {
   )
 }
 
-export default snap
+export default Snap

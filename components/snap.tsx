@@ -13,7 +13,7 @@ const Snap = () => {
         if (dcCardRef.current) {
             dcCardRef.current.scrollIntoView({
             behavior: 'smooth', 
-            //   block: 'nearest',   
+            block: 'start',   
             inline: 'center'    
             });
         }

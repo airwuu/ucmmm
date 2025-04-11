@@ -69,6 +69,8 @@ const MealStatus = ({ location }: { location: string }) => {
     };
   };
 
+  
+
   const locationStatus = getLocationStatus(location);
 
   return (
@@ -82,6 +84,38 @@ const MealStatus = ({ location }: { location: string }) => {
         </div>
     </div>
   );
+};
+
+
+export function isOpen(location: string): boolean {
+  const currentTime=new Date();
+  const currentMeal = getCurrentMeal(currentTime, location);
+  const hours = location === 'dc' ? {
+    lunch: { start: 1030, end: 1400 },
+    dinner: { start: 1500, end: 2000 },
+    late_night: { start: 2100, end: 2400 }
+  } : {
+    breakfast: { start: currentTime.getDay() === 0 || currentTime.getDay() === 6 ? 900 : 700, end: 1030 },
+    lunch: { start: 1100, end: 1500 },
+    dinner: { start: 1600, end: 2100 }
+  };
+
+  const currentTimeNum = currentTime.getHours() * 100 + currentTime.getMinutes();
+  
+  const meals = Object.entries(hours);
+  let status = false;
+  for (const [meal, times] of meals) {
+    if (currentTimeNum < times.start) {
+      status = false;
+      break;
+    } else if (currentTimeNum >= times.start && currentTimeNum < times.end) {
+      status = true;
+      break;
+    } else {
+      status = false;
+    }
+  }
+  return status;
 };
 
 export default MealStatus;

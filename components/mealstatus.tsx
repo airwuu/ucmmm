@@ -30,6 +30,12 @@ const MealStatus = ({ location }: { location: string }) => {
 
   const getLocationStatus = (location: string) => {
     const currentMeal = getCurrentMeal(currentTime, location);
+    if (location === 'dc' && (currentTime.getDay() === 0 || currentTime.getDay() === 6)) {
+        return {
+        meal: "closed",
+        status: "closed on weekends"
+      };
+    }
     const hours = location === 'dc' ? {
       lunch: { start: 1030, end: 1400 },
       dinner: { start: 1500, end: 2000 },
@@ -115,6 +121,9 @@ export function isOpen(location: string): boolean {
       status = false;
     }
   }
+  if (location === 'dc' && (currentTime.getDay() === 0 || currentTime.getDay() === 6)) {
+    return false;
+}
   return status;
 };
 

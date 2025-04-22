@@ -11,8 +11,9 @@ interface itemProps {
   name: any;
   reports: any;
   id: any;
+  onReportSuccess: () => void;
 }
-const item: React.FC<itemProps> = ({ name, reports, id }) => {
+const item: React.FC<itemProps> = ({ name, reports, id, onReportSuccess }) => {
   const getButtonStyle = () => {
     if (reports >= 2) {
       return "bg-red-500";
@@ -22,14 +23,24 @@ const item: React.FC<itemProps> = ({ name, reports, id }) => {
     return "bg-content4";
   };
 
-  function report() {
-    fetch(`https://ucmmmdb.ucmmm-ucm.workers.dev/item/${id}/missing`, {
-      method: "POST",
-    })
-      .then((response) => response.json()) // if expecting a JSON response
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
-      window.location.reload();
+  async function report() {
+    try {
+      const response = await fetch(
+        `https://ucmmmdb.ucmmm-ucm.workers.dev/item/${id}/missing`,
+        {
+          method: "POST",
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+      const data = await response.json(); 
+      console.log("Report successful:", data);
+      onReportSuccess(); 
+    } catch (error) {
+      console.error("Error reporting item:", error);
+    }
+    // window.location.reload();
   }
   return (
     <Dropdown backdrop="blur">

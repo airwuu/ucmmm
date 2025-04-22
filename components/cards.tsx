@@ -121,6 +121,7 @@ export default function Cards({
                       name={item.name}
                       reports={item.missing_reports}
                       id={item.item_id}
+                      onReportSuccess={refetch}
                     />}
                   </li>
                 ))}

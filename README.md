@@ -57,7 +57,7 @@ ucmmm is still under active development by UCM students. There are still plenty 
 - [ ] Scheduled cron jobs to populate DB
 - [ ] Add crowd sourced menu items
 - [ ] View multiple days/meal services
-- [ ] Display Food trucks
+- [x] Display Food trucks (beta: weekly schedule image w/ future plan for structured data)
 - [ ] Allergen Information
 - [x] Line Size Estimations
 - [ ] Ice Machine Detection

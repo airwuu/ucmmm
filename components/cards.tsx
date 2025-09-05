@@ -145,8 +145,8 @@ export default function Cards({
         ):""
         )
       }
-      <div className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
-        <h2 className="text-xl font-semibold mb-2">Beta/Debug Information:</h2>
+      <details className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
+        <summary className="text-xl font-semibold mb-2">Debug Information:</summary>
         <Datetime location={location} />
         <div className="text-blue-400 text-small">{params}</div>
         <div className="mt-3 text-[10px] leading-tight text-foreground/60">
@@ -159,7 +159,7 @@ export default function Cards({
           </ul>
           <p className="mt-1 italic">Heuristic: baseline by meal + surge near class release (:20, :15, :45) - lull far from patterns.</p>
         </div>
-      </div>
+      </details>
     </div>
   );
 }

@@ -82,10 +82,10 @@ const MealStatus = ({ location }: { location: string }) => {
   return (
     <div className="flex flex-col border-1 mb-2 p-2 rounded-lg border-foreground/10 bg-content3">
         <div className="items-center flex flex-col">
-          <p className="text-lg flex gap-2">
-            <p>service:</p>
-            <p className="font-bold">{locationStatus.meal}</p>
-          </p>
+          <div className="text-lg flex gap-2">
+            <span>service:</span>
+            <span className="font-bold">{locationStatus.meal}</span>
+          </div>
           <p className="text-sm text-gray-500">{locationStatus.status}</p>
         </div>
     </div>

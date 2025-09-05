@@ -59,6 +59,6 @@ ucmmm is still under active development by UCM students. There are still plenty 
 - [ ] View multiple days/meal services
 - [ ] Display Food trucks
 - [ ] Allergen Information
-- [ ] Line Size Estimations
+- [x] Line Size Estimations
 - [ ] Ice Machine Detection
 - [ ] Theme Picker/customizer 

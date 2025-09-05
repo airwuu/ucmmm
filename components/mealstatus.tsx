@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentMeal } from './functions/meal';
+import { estimateLineSize } from './functions/line';
 
 const MealStatus = ({ location }: { location: string }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -79,15 +80,49 @@ const MealStatus = ({ location }: { location: string }) => {
 
   const locationStatus = getLocationStatus(location);
 
+  const line = locationStatus.meal !== 'closed' ? estimateLineSize(currentTime, locationStatus.meal, location) : null;
+
+  const levelColor: Record<string,string> = {
+    low: 'bg-green-500/20 text-green-600 dark:text-green-400',
+    moderate: 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400',
+    high: 'bg-orange-500/20 text-orange-600 dark:text-orange-400',
+    peak: 'bg-red-500/20 text-red-600 dark:text-red-400'
+  };
+
   return (
     <div className="flex flex-col border-1 mb-2 p-2 rounded-lg border-foreground/10 bg-content3">
-        <div className="items-center flex flex-col">
-          <div className="text-lg flex gap-2">
-            <span>service:</span>
-            <span className="font-bold">{locationStatus.meal}</span>
-          </div>
-          <p className="text-sm text-gray-500">{locationStatus.status}</p>
+      <div className="items-center flex flex-col gap-1">
+        <div className="text-lg flex gap-2">
+          <span>service:</span>
+          <span className="font-bold">{locationStatus.meal}</span>
         </div>
+        <p className="text-sm text-gray-500">{locationStatus.status}</p>
+        {line && (
+          <div className="flex flex-col items-center text-xs mt-1 w-full group relative">
+            <div className="flex gap-2 items-center">
+              <span className="uppercase tracking-wide">line:</span>
+              <span className={`px-2 py-0.5 rounded-full font-semibold ${levelColor[line.level]}`}>{line.level}</span>
+              <span className="text-foreground/50">{Math.round(line.score)}</span>
+              <span className="cursor-help text-foreground/40 hover:text-foreground/70 transition-colors" aria-label="How is line calculated?">ⓘ</span>
+            </div>
+            <p className="text-[10px] leading-snug text-foreground/50 text-center">{line.reason}</p>
+            {/* Tooltip */}
+            <div className="opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity absolute top-full mt-1 z-50 w-56 text-[10px] leading-snug bg-content2/90 backdrop-blur border border-foreground/10 rounded p-2 shadow">
+              <p className="font-semibold mb-1">Line estimate (beta)</p>
+              <p>Score = meal baseline + recent class release surge - lull adjustment.</p>
+              <ul className="list-disc ml-4 mt-1 space-y-0.5">
+                <li>Higher after class end times (:20, :15, :45).</li>
+                <li>Peaks ~2 min after release.</li>
+                <li>Lowers during mid-block lulls.</li>
+              </ul>
+              <p className="mt-1 italic">Heuristic; not real-time sensor data.</p>
+            </div>
+          </div>
+        )}
+      </div>
+      {(!line && locationStatus.meal === 'closed') && (
+        <p className="text-xs text-center text-foreground/50 mt-2">line estimation unavailable while closed</p>
+      )}
     </div>
   );
 };

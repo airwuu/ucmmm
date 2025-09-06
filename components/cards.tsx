@@ -4,7 +4,7 @@ import Datetime from "./datetime";
 import Item from "@/components/item";
 import { getCurrentMeal } from "./functions/meal";
 import { getPDTDate, getStartOfWeek, getCurrentDay } from "./functions/time";
-import MealStatus from "./mealstatus"
+import MealStatus, {LineStatus}  from "./mealstatus"
 import { isOpen } from "./mealstatus"
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
@@ -145,11 +145,12 @@ export default function Cards({
         ):""
         )
       }
-      <div className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
-        <h2 className="text-xl font-semibold mb-2">Beta/Debug Information:</h2>
+      <details className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
+        <summary className="text-l font-semibold m-1 text-primary/50">Extra Information:</summary>
+        <LineStatus location={location}/>
         <Datetime location={location} />
         <div className="text-blue-400 text-small">{params}</div>
-      </div>
+      </details>
     </div>
   );
 }

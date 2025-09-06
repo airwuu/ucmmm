@@ -1,6 +1,6 @@
 import { createWorker, RecognizeResult } from 'tesseract.js';
-import path from 'path';
-import fs from 'fs';
+// import path from 'path';
+// import fs from 'fs';    removed because cant use on edge runtime
 
 export interface OCRResultLine {
   text: string;
@@ -19,22 +19,54 @@ export interface ParsedScheduleEntry {
 const DAY_REGEX = /^(mon|tue|wed|thu|fri|sat|sun)\b/i;
 const TIME_RANGE_REGEX = /(\d{1,2}:\d{2}\s?(?:am|pm)?)\s?[-–]\s?(\d{1,2}:\d{2}\s?(?:am|pm)?)/i;
 
-export async function runOCR(url: string) {
-  // Build absolute paths for worker/core to satisfy Node worker_threads requirement.
-  const workerPath = path.join(process.cwd(), 'node_modules', 'tesseract.js', 'dist', 'worker.min.js');
-  const coreCandidates = [
-    path.join(process.cwd(), 'node_modules', 'tesseract.js-core', 'tesseract-core-simd.wasm.js'),
-    path.join(process.cwd(), 'node_modules', 'tesseract.js-core', 'tesseract-core.wasm.js'),
-  ];
-  const corePath = coreCandidates.find(p => fs.existsSync(p)) || coreCandidates[0];
-  const langPath = path.join(process.cwd(), 'node_modules', 'tesseract.js', 'langs');
+// export async function runOCR(url: string) {
+//   // Build absolute paths for worker/core to satisfy Node worker_threads requirement.
+//   const workerPath = path.join(process.cwd(), 'node_modules', 'tesseract.js', 'dist', 'worker.min.js');
+//   const coreCandidates = [
+//     path.join(process.cwd(), 'node_modules', 'tesseract.js-core', 'tesseract-core-simd.wasm.js'),
+//     path.join(process.cwd(), 'node_modules', 'tesseract.js-core', 'tesseract-core.wasm.js'),
+//   ];
+//   const corePath = coreCandidates.find(p => fs.existsSync(p)) || coreCandidates[0];
+//   const langPath = path.join(process.cwd(), 'node_modules', 'tesseract.js', 'langs');
 
-  const worker = await createWorker({
-    workerPath,
-    corePath,
-    langPath,
+//   const worker = await createWorker({
+//     workerPath,
+//     corePath,
+//     langPath,
+//     logger: () => {},
+//   } as any);
+//   try {
+//     await (worker as any).load();
+//     await (worker as any).loadLanguage('eng');
+//     await (worker as any).initialize('eng');
+//     const result: RecognizeResult = await (worker as any).recognize(url);
+//     const data: RecognizeResult['data'] = result.data;
+//     const lines: OCRResultLine[] = [];
+//     for (const block of data.blocks || []) {
+//       for (const paragraph of block.paragraphs || []) {
+//         for (const line of paragraph.lines || []) {
+//           const text = (line.text || '').trim();
+//           if (text) {
+//             lines.push({ text, confidence: line.confidence });
+//           }
+//         }
+//       }
+//     }
+//     return lines.filter(l => l.text && /[a-z0-9]/i.test(l.text));
+//   } catch (e) {
+//     // Fallback: return empty with error indicator line so caller can handle gracefully.
+//     return [{ text: `OCR_ERROR: ${(e as any)?.message || 'unknown'}`, confidence: 0 }];
+//   } finally {
+//     await (worker as any).terminate();
+//   }
+// }
+
+export async function runOCR(url: string) {
+  // commented previous logic for building absolute paths
+  // tesseract.js uses its default CDN paths for the worker and core files
+  const worker = await createWorker('eng', undefined, {
     logger: () => {},
-  } as any);
+  });
   try {
     await (worker as any).load();
     await (worker as any).loadLanguage('eng');
@@ -54,12 +86,12 @@ export async function runOCR(url: string) {
     }
     return lines.filter(l => l.text && /[a-z0-9]/i.test(l.text));
   } catch (e) {
-    // Fallback: return empty with error indicator line so caller can handle gracefully.
     return [{ text: `OCR_ERROR: ${(e as any)?.message || 'unknown'}`, confidence: 0 }];
   } finally {
     await (worker as any).terminate();
   }
 }
+
 
 export function parseSchedule(lines: OCRResultLine[]): ParsedScheduleEntry[] {
   return lines.map(l => {

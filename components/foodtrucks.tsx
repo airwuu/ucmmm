@@ -67,13 +67,34 @@ const FoodTrucks: React.FC = () => {
   useEffect(()=>{
     if (typeof window === 'undefined') return;
     if ((window as any).cv && (window as any).cv.imread) { setCvReady(true); return; }
+    const scriptId = 'opencv-js';
+    const existingScript = document.getElementById(scriptId);
+
+    if (existingScript) {
+      const waitReady = () => {
+        try {
+          if ((window as any).cv && (window as any).cv.imread) {
+            setCvReady(true);
+            return;
+          }
+        } catch {}
+        setTimeout(waitReady, 50);
+      };
+      waitReady();
+      return;
+    }
+
     const script = document.createElement('script');
+    script.id = scriptId; 
     script.src = 'https://docs.opencv.org/4.x/opencv.js';
     script.async = true;
     script.onload = () => {
       const waitReady = () => {
         try {
-          if ((window as any).cv && (window as any).cv.imread) { setCvReady(true); return; }
+          if ((window as any).cv && (window as any).cv.imread) {
+            setCvReady(true);
+            return;
+          }
         } catch {}
         setTimeout(waitReady, 50);
       };
@@ -606,7 +627,7 @@ const FoodTrucks: React.FC = () => {
            				}
                       return (
                       <li key={`${e.truck}-${e.day}-${e.start}`} className={`flex  rounded-lg flex-col px-1 py-0.5 ${e.notes==='ocr-table' ? 'bg-content4/70 ' : 'bg-content4/20'}`}>
-                        <span className="p-2 rounded font-medium flex items-center justify-between text-[14px]">{e.truck} {e.cuisine && <span className="text-foreground/40 text-[11px]">{e.cuisine}</span>} {e.notes==='ocr-table' && <span className="text-[11px] uppercase tracking-wide bg-primary/15 text-foreground dark:text-primary px-1 py-[1px] rounded">{to12h(e.start)} – {to12h(e.end)}{e.notes && e.notes!=='ocr-table'? ` • ${e.notes}`:''}</span>}</span>
+                        <span className="p-2 rounded font-medium flex items-center justify-between text-[14px]">{e.truck} {e.cuisine && <span className="text-foreground/40 text-[11px]">{e.cuisine}</span>} {e.notes==='ocr-table' && <span className="text-[11px] uppercase tracking-wide bg-yellow-500/25 text-foreground dark:text-primary px-1 py-[1px] rounded">{to12h(e.start)} – {to12h(e.end)}{e.notes && e.notes!=='ocr-table'? ` • ${e.notes}`:''}</span>}</span>
                       </li>
                       );
                     })}
@@ -713,7 +734,7 @@ const FoodTrucks: React.FC = () => {
         </div>
       )}
       <div className="mt-3 p-2 rounded bg-foreground/5 text-[10px] leading-snug text-foreground/50">
-        <p>Images are auto-fetched (hourly cache) from UC Merced website.</p>
+        <p>Images are auto-fetched (hourly cache) from <a href="https://dining.ucmerced.edu/locations-hours/food-trucks" className="z-[1000] underline text-blue-500">UC Merced website</a>.</p>
       </div>
     </div>
   );

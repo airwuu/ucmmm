@@ -146,7 +146,7 @@ export default function Cards({
         )
       }
       <details className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
-        <summary className="text-xl font-semibold mb-2">Debug Information:</summary>
+        <summary className="text-l font-semibold m-1 text-primary/50">Extra Information:</summary>
         <LineStatus location={location}/>
         <Datetime location={location} />
         <div className="text-blue-400 text-small">{params}</div>

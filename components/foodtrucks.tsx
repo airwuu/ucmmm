@@ -596,18 +596,17 @@ const FoodTrucks: React.FC = () => {
            {Object.entries(ocrGrouped).map(([day, entries]) => {
               if (!entries.length) return null;
               return (
-                <div key={day} className="border border-foreground/10 rounded p-1 bg-content3/50">
+                <div key={day} className="border-1 my-2 p-2 rounded-lg border-foreground/10 bg-content3">
                   <p className="font-semibold capitalize text-foreground/70 mb-0.5">{day}</p>
-                  <ul className="space-y-0.5">
+                  <ul className="flex flex-col gap-1 space-y-0.5">
                     {entries.map(e=> {
            				// Match "Co"/"UCM Week of"
            				if (e.truck == "Co" || e.truck == "UCM Week of") {
            				  return null;
            				}
                       return (
-                      <li key={`${e.truck}-${e.day}-${e.start}`} className={`flex flex-col rounded px-1 py-0.5 ${e.notes==='ocr-table' ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-foreground/5'}`}>
-                        <span className="font-medium flex items-center gap-1">{e.truck} {e.cuisine && <span className="text-foreground/40 text-[10px]">{e.cuisine}</span>} {e.notes==='ocr-table' && <span className="text-[8px] uppercase tracking-wide bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-1 py-[1px] rounded">ocr</span>}</span>
-                        <span className="text-[10px] text-foreground/60">{to12h(e.start)} – {to12h(e.end)}{e.notes && e.notes!=='ocr-table'? ` • ${e.notes}`:''}</span>
+                      <li key={`${e.truck}-${e.day}-${e.start}`} className={`flex  rounded-lg flex-col px-1 py-0.5 ${e.notes==='ocr-table' ? 'bg-content4/70 ' : 'bg-content4/20'}`}>
+                        <span className="p-2 rounded font-medium flex items-center justify-between text-[14px]">{e.truck} {e.cuisine && <span className="text-foreground/40 text-[11px]">{e.cuisine}</span>} {e.notes==='ocr-table' && <span className="text-[11px] uppercase tracking-wide bg-primary/15 text-foreground dark:text-primary px-1 py-[1px] rounded">{to12h(e.start)} – {to12h(e.end)}{e.notes && e.notes!=='ocr-table'? ` • ${e.notes}`:''}</span>}</span>
                       </li>
                       );
                     })}

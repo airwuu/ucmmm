@@ -4,7 +4,7 @@ import { runOCR, parseSchedule } from '@/lib/ocr/foodtrucks';
 // This endpoint OCRs the current week's image (or first available) from /api/foodtrucks/images
 
 export const maxDuration = 60; // allow longer for OCR in edge environments
-export const runtime = 'nodejs'; // ensure worker_threads support
+export const runtime = 'edge'; // switched from nodejs which ensured worker_threads support
 
 export async function GET(request: Request) {
   const debug: any[] = [];

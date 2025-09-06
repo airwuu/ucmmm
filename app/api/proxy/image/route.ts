@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function GET(req: Request) {
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     const arrayBuf = await upstream.arrayBuffer();
     // Infer content type
     const ct = upstream.headers.get('content-type') || 'image/png';
-    return new NextResponse(Buffer.from(arrayBuf), {
+    return new NextResponse(arrayBuf, {
       status: 200,
       headers: {
         'Content-Type': ct,

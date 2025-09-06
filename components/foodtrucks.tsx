@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useEffect, useState, useRef, useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import { truckSchedule, daysOrder, TruckScheduleEntry } from '@/data/foodtrucks';
 
 interface WeekImage {
@@ -119,6 +119,7 @@ const FoodTrucks: React.FC = () => {
 
   // }, [active, tableOcrLoading, tableOcrResult]);
 
+
   // Derive schedule entries from table OCR result if present
   const ocrTableEntries = useMemo<TruckScheduleEntry[]>(()=> {
     if(!tableOcrResult || !tableOcrResult.length) return [];
@@ -198,7 +199,7 @@ const FoodTrucks: React.FC = () => {
     if(h===0) h=12; else if(h>12) h-=12;
     return `${h}:${mm} ${suffix}`;
   }
-  const runOcr = useCallback( async()=>{
+  const runOcr = async()=>{
     if(!active?.url) return;
     setTableOcrLoading(true); setTableOcrError(undefined); setTableOcrResult(null); setRawTableText(undefined); setTableOcrProgress(0);
     let objectUrl: string | undefined;
@@ -575,20 +576,23 @@ const FoodTrucks: React.FC = () => {
       if (objectUrl && objectUrl.startsWith('blob:')) { try { URL.revokeObjectURL(objectUrl); } catch {} }
       setTableOcrLoading(false);
     }
-  }, [active, cvReady]);
+  };
   const grouped = useMemo(()=> groupByDay(filteredEntries), [filteredEntries]);
   const ocrGrouped = useMemo(() => groupByDay(ocrTableEntries.filter(e => e.day === todayDay)), [ocrTableEntries, todayDay]);
 
   useEffect(() => {
-    if (autoRunRef.current || !active?.url) return;
+    // Don't run if the auto-run has already been triggered
+    if (autoRunRef.current) return;
+    
+    // Wait until both the active image URL is available AND OpenCV is ready
+    if (active?.url && cvReady) {
+      autoRunRef.current = true; // Mark that we've triggered the auto-run
+      console.log("Dependencies ready, running automatic OCR...");
+      runOcr();
+    }
+    // Add cvReady to the dependency array to ensure the effect re-evaluates when it changes
+  }, [active, cvReady, runOcr]);
 
-    autoRunRef.current = true;
-
-
-    console.log("Running OCR after delay...");
-    runOcr();
-
-  }, [active, runOcr]);
   return (
     <div className="relative snap-center shrink-0 w-[300px] rounded-lg max-w-[300px] px-5 py-3 flex flex-col bg-content1">
       <h1 className="mb-4 text-2xl text-primary/90 font-extrabold flex justify-center items-center gap-2"> Food Trucks <span className="text-[10px] uppercase tracking-wide px-1  rounded bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">beta</span></h1>

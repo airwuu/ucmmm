@@ -80,6 +80,98 @@ const MealStatus = ({ location }: { location: string }) => {
 
   const locationStatus = getLocationStatus(location);
 
+
+  return (
+    <div className="flex flex-col border-1 mb-2 p-2 rounded-lg border-foreground/10 bg-content3">
+      <div className="items-center flex flex-col gap-1">
+        <div className="text-lg flex gap-2">
+          <span>service:</span>
+          <span className="font-bold">{locationStatus.meal}</span>
+        </div>
+        <p className="text-sm text-gray-500">{locationStatus.status}</p>
+      </div>
+    </div>
+  );
+};
+
+export const LineStatus = ({ location }: { location: string }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getTimeInMinutes = (date: Date) => {
+    return date.getHours() * 60 + date.getMinutes();
+  }
+
+  const formatTimeUntil = (targetTime: number) => {
+    const currentMinutes = getTimeInMinutes(currentTime);
+    const targetMinutes = Math.floor(targetTime / 100) * 60 + (targetTime % 100);
+    const diffMinutes = targetMinutes - currentMinutes;
+    
+    if (diffMinutes <= 60) {
+      return `in ${diffMinutes} minutes`;
+    } else {
+      const hours = Math.floor(diffMinutes / 60);
+      const minutes = diffMinutes % 60;
+      return `in ${hours} hr${hours > 1 ? 's' : ''} ${minutes > 0 ? `and ${minutes} mins` : ''}`;
+    }
+  }
+
+  const getLocationStatus = (location: string) => {
+    const currentMeal = getCurrentMeal(currentTime, location);
+    if (location === 'dc' && (currentTime.getDay() === 0 || currentTime.getDay() === 6)) {
+        return {
+        meal: "closed",
+        status: "closed on weekends"
+      };
+    }
+    const hours = location === 'dc' ? {
+      lunch: { start: 1030, end: 1400 },
+      dinner: { start: 1500, end: 2000 },
+      late_night: { start: 2100, end: 2400 }
+    } : {
+      breakfast: { start: currentTime.getDay() === 0 || currentTime.getDay() === 6 ? 900 : 700, end: 1030 },
+      lunch: { start: 1100, end: 1500 },
+      dinner: { start: 1600, end: 2100 }
+    };
+
+    const currentTimeNum = currentTime.getHours() * 100 + currentTime.getMinutes();
+    
+    // Find next meal time
+    const meals = Object.entries(hours);
+    let status = '';
+    
+    for (const [meal, times] of meals) {
+      if (currentTimeNum < times.start) {
+        status = `opens ${formatTimeUntil(times.start)}`;
+        break;
+      } else if (currentTimeNum >= times.start && currentTimeNum < times.end) {
+        status = `open - closes ${formatTimeUntil(times.end)}`;
+        break;
+      } else {
+        status = "closed"
+      }
+    }
+    
+    if (!status) {
+      const nextDayFirstMeal = Object.values(hours)[0];
+      status = formatTimeUntil(nextDayFirstMeal.start);
+    }
+
+    return {
+      meal: currentMeal,
+      status
+    };
+  };
+
+  
+
+  const locationStatus = getLocationStatus(location);
+
   const line = locationStatus.meal !== 'closed' ? estimateLineSize(currentTime, locationStatus.meal, location) : null;
 
   const levelColor: Record<string,string> = {
@@ -92,11 +184,6 @@ const MealStatus = ({ location }: { location: string }) => {
   return (
     <div className="flex flex-col border-1 mb-2 p-2 rounded-lg border-foreground/10 bg-content3">
       <div className="items-center flex flex-col gap-1">
-        <div className="text-lg flex gap-2">
-          <span>service:</span>
-          <span className="font-bold">{locationStatus.meal}</span>
-        </div>
-        <p className="text-sm text-gray-500">{locationStatus.status}</p>
         {line && (
           <div className="flex flex-col items-center text-xs mt-1 w-full group relative">
             <div className="flex gap-2 items-center">
@@ -117,7 +204,19 @@ const MealStatus = ({ location }: { location: string }) => {
               </ul>
               <p className="mt-1 italic">Heuristic; not real-time sensor data.</p>
             </div>
+            <div className="text-foreground/50">_________________________________</div>
+            <div className="mt-3 text-[10px] leading-tight text-foreground/60">
+              <p className="font-semibold mb-1">Line estimate legend:</p>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                <li><span className="inline-block px-1.5 py-0.5 rounded bg-green-500/20 text-green-600 dark:text-green-400 text-[10px] mr-1">low</span> score &lt;= 30</li>
+                <li><span className="inline-block px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-[10px] mr-1">moderate</span> 31–50</li>
+                <li><span className="inline-block px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] mr-1">high</span> 51–75</li>
+                <li><span className="inline-block px-1.5 py-0.5 rounded bg-red-500/20 text-red-600 dark:text-red-400 text-[10px] mr-1">peak</span> &gt; 75</li>
+              </ul>
+              <p className="mt-1 italic">Heuristic: baseline by meal + surge near class release (:20, :15, :45) - lull far from patterns.</p>
+            </div>
           </div>
+
         )}
       </div>
       {(!line && locationStatus.meal === 'closed') && (

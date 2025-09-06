@@ -4,7 +4,7 @@ import Datetime from "./datetime";
 import Item from "@/components/item";
 import { getCurrentMeal } from "./functions/meal";
 import { getPDTDate, getStartOfWeek, getCurrentDay } from "./functions/time";
-import MealStatus from "./mealstatus"
+import MealStatus, {LineStatus}  from "./mealstatus"
 import { isOpen } from "./mealstatus"
 
 const BASE_URL = "https://ucmmmdb.ucmmm-ucm.workers.dev/menu";
@@ -147,18 +147,9 @@ export default function Cards({
       }
       <details className="station-section flex flex-col border-1 my-4 p-2 rounded-lg border-foreground/10 bg-foreground/5">
         <summary className="text-xl font-semibold mb-2">Debug Information:</summary>
+        <LineStatus location={location}/>
         <Datetime location={location} />
         <div className="text-blue-400 text-small">{params}</div>
-        <div className="mt-3 text-[10px] leading-tight text-foreground/60">
-          <p className="font-semibold mb-1">Line estimate legend:</p>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <li><span className="inline-block px-1.5 py-0.5 rounded bg-green-500/20 text-green-600 dark:text-green-400 text-[10px] mr-1">low</span> score &lt;= 30</li>
-            <li><span className="inline-block px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-[10px] mr-1">moderate</span> 31–50</li>
-            <li><span className="inline-block px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] mr-1">high</span> 51–75</li>
-            <li><span className="inline-block px-1.5 py-0.5 rounded bg-red-500/20 text-red-600 dark:text-red-400 text-[10px] mr-1">peak</span> &gt; 75</li>
-          </ul>
-          <p className="mt-1 italic">Heuristic: baseline by meal + surge near class release (:20, :15, :45) - lull far from patterns.</p>
-        </div>
       </details>
     </div>
   );

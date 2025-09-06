@@ -108,18 +108,6 @@ const FoodTrucks: React.FC = () => {
 
   const weekStartForStructured = useMemo(()=> active?.start || truckSchedule[0]?.weekStart, [active]);
 
-  // // Auto-trigger OCR on load
-  // useEffect(()=>{
-  //   if (autoRunRef.current) return;
-  //   if (tableOcrLoading) return;
-  //   if (tableOcrResult && tableOcrResult.length) return;
-  //   if (!active?.url) return;
-  //   autoRunRef.current = true;
-  //   runOcr();
-
-  // }, [active, tableOcrLoading, tableOcrResult]);
-
-
   // Derive schedule entries from table OCR result if present
   const ocrTableEntries = useMemo<TruckScheduleEntry[]>(()=> {
     if(!tableOcrResult || !tableOcrResult.length) return [];
@@ -581,16 +569,11 @@ const FoodTrucks: React.FC = () => {
   const ocrGrouped = useMemo(() => groupByDay(ocrTableEntries.filter(e => e.day === todayDay)), [ocrTableEntries, todayDay]);
 
   useEffect(() => {
-    // Don't run if the auto-run has already been triggered
     if (autoRunRef.current) return;
-    
-    // Wait until both the active image URL is available AND OpenCV is ready
     if (active?.url && cvReady) {
-      autoRunRef.current = true; // Mark that we've triggered the auto-run
-      console.log("Dependencies ready, running automatic OCR...");
+      autoRunRef.current = true; 
       runOcr();
     }
-    // Add cvReady to the dependency array to ensure the effect re-evaluates when it changes
   }, [active, cvReady, runOcr]);
 
   return (
@@ -633,13 +616,6 @@ const FoodTrucks: React.FC = () => {
               )
             })}
            </div>
-           <button
-              ref={ocrBtnRef}
-              style={{ display: 'flex bg-emerald-500/10 border border-emerald-500/20' }}
-              onClick={runOcr}
-            >
-              Run Table OCR (new)
-            </button>
         </div>
       )}
       {tab==='image' && (
@@ -680,7 +656,44 @@ const FoodTrucks: React.FC = () => {
             })}
             {!filteredEntries.length && <p className="text-foreground/40">No entries for selected filters.</p>}
           </div>
-
+          <button
+              ref={ocrBtnRef}
+              onClick={runOcr}
+              className="w-full text-[11px] mt-2 px-2 py-1 rounded bg-foreground/20 hover:bg-blue-500/30 dark:text-blue-400 transition disabled:opacity-40"
+            >
+              Reload Table
+            </button>
+            {tableOcrResult && tableOcrResult.length > 0 && (
+              <div className="mt-4">
+                <p className="font-semibold text-[10px] mb-1 flex items-center gap-2">
+                  Table OCR Result <span className="text-foreground/40 font-normal">{tableOcrResult.length} rows</span>
+                </p>
+                <div className="max-h-60 overflow-y-auto border border-foreground/10 rounded"> {/* Added a container for scrolling */}
+                  <table className="w-full table-auto border-collapse text-[9px]">
+                    <thead className="sticky top-0 bg-content2/80 backdrop-blur-sm">
+                      <tr>
+                        {Object.keys(tableOcrResult[0] || {}).map(h => (
+                          <th key={h} className="px-1 py-0.5 text-left font-semibold">
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableOcrResult.slice(0, 50).map((r, i) => (
+                        <tr key={i} className="odd:bg-foreground/5">
+                          {Object.keys(tableOcrResult[0]).map(h => (
+                            <td key={h} className="px-1 py-0.5 align-top border-t border-foreground/5">
+                              {r[h]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
         <>
           {loading && <p className="text-xs text-foreground/40">Loading schedule…</p>}
           {error && <p className="text-xs text-red-500">Fetch failed; using fallback.</p>}

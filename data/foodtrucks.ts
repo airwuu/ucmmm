@@ -18,4 +18,4 @@ export const truckSchedule: TruckScheduleEntry[] = [
   { weekStart: '2025-09-08', truck: 'Noodle Bowl', day: 'thu', start: '11:30', end: '14:30', cuisine: 'Asian Fusion' },
 ];
 
-export const daysOrder = ['mon','tue','wed','thu','fri'];
+export const daysOrder = ['mon','tue','wed','thu','fri', 'sat', 'sun'];

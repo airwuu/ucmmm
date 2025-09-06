@@ -164,20 +164,39 @@ const FoodTrucks: React.FC = () => {
       return { start, end };
     }
     function abbrev(day:string){ return day.slice(0,3).toLowerCase(); }
-    for(const row of tableOcrResult){
-      const locRaw = (row[locationKey]||'').trim();
-      if(!locRaw) continue;
-      let hours = parseHours(locRaw) || { start: '10:00', end: '18:00' };
-      for(const day of Object.keys(dayKeyMap)){
-        const cell = (row[ dayKeyMap[day] ]||'').trim();
-        if(!cell) continue;
-        if(/^(closed|holiday)$/i.test(cell)) continue;
-        const truck = cell.replace(/[^A-Za-z0-9&'()\-\s]/g,'').trim();
-        if(!truck) continue;
-        // Extend hours to 11pm for El Taco when hours were not explicitly parsed (i.e., we used default)
-        if (!parseHours(locRaw) && /el\s*taco/i.test(truck)) {
-          hours = { start: '10:00', end: '23:00' };
-        }
+    // for(const row of tableOcrResult){
+    //   const locRaw = (row[locationKey]||'').trim();
+    //   if(!locRaw) continue;
+    //   let hours = parseHours(locRaw) || { start: '10:00', end: '18:00' };
+    //   for(const day of Object.keys(dayKeyMap)){
+    //     const cell = (row[ dayKeyMap[day] ]||'').trim();
+    //     if(!cell) continue;
+    //     if(/^(closed|holiday)$/i.test(cell)) continue;
+    //     const truck = cell.replace(/[^A-Za-z0-9&'()\-\s]/g,'').trim();
+    //     if(!truck) continue;
+    //     // Extend hours to 11pm for El Taco when hours were not explicitly parsed (i.e., we used default)
+    //     if (!parseHours(locRaw) && /el\s*taco/i.test(truck)) {
+    //       hours = { start: '10:00', end: '23:00' };
+    //     }
+    //     entries.push({ weekStart: WEEK, truck, day: abbrev(day), start: hours.start, end: hours.end, notes: 'ocr-table' });
+    //   }
+    // }
+    for (const row of tableOcrResult) {
+      const locRaw = (row[locationKey] || '').trim();
+      if (!locRaw) continue;
+
+      // Determine hours based on the row's location string
+      const isNightService = /night service/i.test(locRaw);
+      const hours = isNightService
+        ? { start: 'Night Service', end: '' }
+        : parseHours(locRaw) || { start: '10:00', end: '18:00' };
+
+      for (const day of Object.keys(dayKeyMap)) {
+        const cell = (row[dayKeyMap[day]] || '').trim();
+        if (!cell || /^(closed|holiday)$/i.test(cell)) continue;
+        const truck = cell.replace(/[^A-Za-z0-9&'()\-\s]/g, '').trim();
+        if (!truck) continue;
+
         entries.push({ weekStart: WEEK, truck, day: abbrev(day), start: hours.start, end: hours.end, notes: 'ocr-table' });
       }
     }
@@ -395,7 +414,7 @@ const FoodTrucks: React.FC = () => {
                 rows.push(obj);
               }
               // Filter out empty location rows
-              const filteredRows = rows.filter(r=> Object.values(r).some(v=> typeof v === 'string' && v.trim().length>1));
+              const filteredRows = rows.filter(r => r.Location && r.Location.length > 2); 
               if (filteredRows.length >= 2 && hasDayCell) {
                 gridRowsResult = filteredRows;
                 gridInfo = { rows: rowsCount, cols: colsCount, horizLines: horizLines.length, vertLines: vertLines.length, cells: cellBoxes.length, usedWorker, headerRowIndex };
@@ -587,7 +606,10 @@ const FoodTrucks: React.FC = () => {
     }
   };
   const grouped = useMemo(()=> groupByDay(filteredEntries), [filteredEntries]);
-  const ocrGrouped = useMemo(() => groupByDay(ocrTableEntries.filter(e => e.day === todayDay)), [ocrTableEntries, todayDay]);
+  // const ocrGrouped = useMemo(() => groupByDay(ocrTableEntries.filter(e => e.day === todayDay)), [ocrTableEntries, todayDay]);
+  const ocrGroupedToday = useMemo(() => {
+    return ocrTableEntries.filter(e => e.day === todayDay);
+  }, [ocrTableEntries, todayDay]);
 
   useEffect(() => {
     if (autoRunRef.current) return;
@@ -612,30 +634,30 @@ const FoodTrucks: React.FC = () => {
            <p className="text-foreground/50">Food Trucks Scheduled For Today</p>
            {tableOcrLoading && <p>Running OCR...</p>}
            {tableOcrError && <p className="text-red-500">{tableOcrError}</p>}
-           {/* {(!tableOcrLoading && !tableOcrError && ocrTableEntries.length === 0) && <p>No trucks found for today.</p>} */}
-           {(!tableOcrLoading && !tableOcrError && Object.values(ocrGrouped).every(e => e.length === 0)) && <p className="text-foreground/50 m-5">No Food Trucks Today</p>}
+           {(!tableOcrLoading && !tableOcrError && ocrGroupedToday.length === 0) && <p className="text-foreground/50 m-5">No Food Trucks Today</p>}
            <div className="flex flex-col gap-1 pr-1">
-           {Object.entries(ocrGrouped).map(([day, entries]) => {
-              if (!entries.length) return null;
-              return (
-                <div key={day} className="border-1 my-2 p-2 rounded-lg border-foreground/10 bg-content3">
-                  <p className="font-semibold capitalize text-foreground/70 mb-0.5">{day}</p>
+           {ocrGroupedToday.length > 0 && (
+                <div className="border-1 my-2 p-2 rounded-lg border-foreground/10 bg-content3">
+                  <p className="font-semibold capitalize text-foreground/70 mb-0.5">{todayDay}</p>
                   <ul className="flex flex-col gap-1 space-y-0.5">
-                    {entries.map(e=> {
-           				// Match "Co"/"UCM Week of"
+                    {ocrGroupedToday.map(e=> {
            				if (e.truck == "Co" || e.truck == "UCM Week of") {
            				  return null;
            				}
                       return (
-                      <li key={`${e.truck}-${e.day}-${e.start}`} className={`flex  rounded-lg flex-col px-1 py-0.5 ${e.notes==='ocr-table' ? 'bg-content4/70 ' : 'bg-content4/20'}`}>
-                        <span className="p-2 rounded font-medium flex items-center justify-between text-[14px]">{e.truck} {e.cuisine && <span className="text-foreground/40 text-[11px]">{e.cuisine}</span>} {e.notes==='ocr-table' && <span className="text-[11px] uppercase tracking-wide bg-yellow-500/25 text-foreground dark:text-primary px-1 py-[1px] rounded">{to12h(e.start)} – {to12h(e.end)}{e.notes && e.notes!=='ocr-table'? ` • ${e.notes}`:''}</span>}</span>
+                      <li key={`${e.truck}-${e.day}-${e.start}`} className={`flex rounded-lg flex-col px-1 py-0.5 bg-content4/70`}>
+                        <span className="p-2 rounded font-medium flex items-center justify-between text-[14px]">
+                          {e.truck}
+                          <span className="text-[11px] tracking-wide bg-yellow-500/25 text-foreground dark:text-primary px-1 py-[1px] rounded">
+                            {e.start === 'Night Service' ? 'Night Service' : `${to12h(e.start)} – ${to12h(e.end)}`}
+                          </span>
+                        </span>
                       </li>
                       );
                     })}
                   </ul>
                 </div>
-              )
-            })}
+              )}
            </div>
         </div>
       )}

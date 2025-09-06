@@ -612,7 +612,8 @@ const FoodTrucks: React.FC = () => {
            <p className="text-foreground/50">Food Trucks Scheduled For Today</p>
            {tableOcrLoading && <p>Running OCR...</p>}
            {tableOcrError && <p className="text-red-500">{tableOcrError}</p>}
-           {(!tableOcrLoading && !tableOcrError && ocrTableEntries.length === 0) && <p>No trucks found for today.</p>}
+           {/* {(!tableOcrLoading && !tableOcrError && ocrTableEntries.length === 0) && <p>No trucks found for today.</p>} */}
+           {(!tableOcrLoading && !tableOcrError && Object.values(ocrGrouped).every(e => e.length === 0)) && <p className="text-foreground/50 m-5">No Food Trucks Today</p>}
            <div className="flex flex-col gap-1 pr-1">
            {Object.entries(ocrGrouped).map(([day, entries]) => {
               if (!entries.length) return null;

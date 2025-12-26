@@ -46,10 +46,10 @@ export function useTheme() {
         document.documentElement.setAttribute('data-theme', newTheme);
     }, []);
 
-    // Initialize theme on mount
+    // Apply theme whenever it changes
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
-    }, []);
+    }, [theme]);
 
     // Listen for system preference changes
     useEffect(() => {

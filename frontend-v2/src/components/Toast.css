@@ -18,10 +18,10 @@
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
+    background: var(--color-text);
+    border: 2px solid var(--color-primary);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     opacity: 0;
     transform: translateY(20px) scale(0.95);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,6 +61,6 @@
 .toast__message {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-bg);
     line-height: 1.3;
 }

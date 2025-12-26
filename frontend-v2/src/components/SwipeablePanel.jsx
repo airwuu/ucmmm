@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useSwipe, usePanelNavigation } from '../hooks/useSwipe';
+import { isLocationOpen } from '../utils/api';
 import './SwipeablePanel.css';
 
 const PANELS = [
@@ -7,11 +9,22 @@ const PANELS = [
     { id: 'trucks', label: 'Trucks' },
 ];
 
+// Determine initial panel based on what's open
+function getInitialPanel() {
+    const pavOpen = isLocationOpen('pav');
+    const dcOpen = isLocationOpen('dc');
+
+    // If Pavilion is closed but DC is open, start on DC
+    if (!pavOpen && dcOpen) return 1;
+    // Otherwise start on Pavilion (default)
+    return 0;
+}
+
 /**
  * Swipeable panel container with dot indicators
  */
 export default function SwipeablePanel({ children }) {
-    const { activePanel, goToPanel, goNext, goPrev } = usePanelNavigation(PANELS.length);
+    const { activePanel, goToPanel, goNext, goPrev } = usePanelNavigation(PANELS.length, getInitialPanel());
 
     const { onTouchStart, onTouchMove, onTouchEnd, swiping, swipeOffset } = useSwipe({
         onSwipeLeft: goNext,

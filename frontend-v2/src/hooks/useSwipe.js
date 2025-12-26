@@ -56,8 +56,8 @@ export function useSwipe({ onSwipeLeft, onSwipeRight, threshold = 50 }) {
 /**
  * Hook for managing panel navigation
  */
-export function usePanelNavigation(totalPanels = 3) {
-    const [activePanel, setActivePanel] = useState(0);
+export function usePanelNavigation(totalPanels = 3, initialPanel = 0) {
+    const [activePanel, setActivePanel] = useState(initialPanel);
     const containerRef = useRef(null);
 
     const goToPanel = useCallback((index) => {

@@ -18,7 +18,17 @@ export default function FoodTrucks() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedDay, setSelectedDay] = useState(getCurrentDay());
+
+    // Get today as 3-letter abbreviation, default to 'mon' if weekend
+    const getTodayAbbr = () => {
+        const fullDay = getCurrentDay(); // returns 'monday', 'tuesday', etc.
+        const abbr = fullDay.slice(0, 3); // 'mon', 'tue', etc.
+        // If weekend, default to Monday since food trucks are weekday-only
+        if (abbr === 'sat' || abbr === 'sun') return 'mon';
+        return abbr;
+    };
+
+    const [selectedDay, setSelectedDay] = useState(getTodayAbbr);
 
     useEffect(() => {
         async function load() {
@@ -36,8 +46,13 @@ export default function FoodTrucks() {
         load();
     }, []);
 
-    // Today's day
-    const today = getCurrentDay();
+    // Today's day as abbreviation
+    const today = (() => {
+        const fullDay = getCurrentDay();
+        const abbr = fullDay.slice(0, 3);
+        if (abbr === 'sat' || abbr === 'sun') return null; // No "today" indicator on weekends
+        return abbr;
+    })();
 
     // Filter entries for selected day
     const entries = useMemo(() => {

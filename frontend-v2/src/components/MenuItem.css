@@ -1,0 +1,91 @@
+.menu-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    text-align: left;
+    max-width: 100%;
+}
+
+.menu-item__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Status variants */
+.menu-item--available {
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.menu-item--available:hover {
+    background: var(--color-bg-card-hover);
+    border-color: var(--color-border-hover);
+}
+
+.menu-item--low {
+    background: var(--color-low-bg);
+    color: var(--color-low);
+    border: 1px solid var(--color-low);
+}
+
+.menu-item--low:hover {
+    filter: brightness(1.1);
+}
+
+.menu-item--out {
+    background: var(--color-out-bg);
+    color: var(--color-out);
+    border: 1px solid var(--color-out);
+}
+
+.menu-item--out:hover {
+    filter: brightness(1.1);
+}
+
+/* Badge */
+.menu-item__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: currentColor;
+    color: var(--color-bg);
+    flex-shrink: 0;
+}
+
+.menu-item--low .menu-item__badge {
+    background: var(--color-low);
+    color: #000;
+}
+
+.menu-item--out .menu-item__badge {
+    background: var(--color-out);
+    color: #fff;
+}
+
+/* Active/pressed state */
+.menu-item:active {
+    transform: scale(0.95);
+}
+
+/* Disabled state */
+.menu-item:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}

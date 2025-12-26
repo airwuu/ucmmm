@@ -1,0 +1,367 @@
+/* ============================================
+   UCM Menu v2 - Design System
+   ============================================ */
+
+/* CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   Typography Scale
+   ============================================ */
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+/* ============================================
+   Theme Variables - Default (Catgold/UC Merced)
+   ============================================ */
+:root {
+  /* Core palette */
+  --color-primary: #d4a84b;
+  --color-primary-hover: #c49a3e;
+  --color-primary-light: rgba(212, 168, 75, 0.15);
+  
+  --color-secondary: #1e3a5f;
+  --color-accent: #e8c547;
+  
+  /* Backgrounds */
+  --color-bg: #0f0f14;
+  --color-bg-elevated: #1a1a22;
+  --color-bg-card: #22222c;
+  --color-bg-card-hover: #2a2a36;
+  
+  /* Text */
+  --color-text: #f5f5f7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+  
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  
+  /* Status colors */
+  --color-available: #22c55e;
+  --color-available-bg: rgba(34, 197, 94, 0.15);
+  --color-low: #f59e0b;
+  --color-low-bg: rgba(245, 158, 11, 0.15);
+  --color-out: #ef4444;
+  --color-out-bg: rgba(239, 68, 68, 0.15);
+  --color-closed: #6b7280;
+  --color-closed-bg: rgba(107, 114, 128, 0.15);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(212, 168, 75, 0.3);
+  
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  /* Z-index scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+}
+
+/* ============================================
+   Theme: Midnight
+   ============================================ */
+[data-theme="midnight"] {
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: rgba(59, 130, 246, 0.15);
+  --color-secondary: #1e40af;
+  --color-accent: #60a5fa;
+  --color-bg: #0a0a12;
+  --color-bg-elevated: #12121c;
+  --color-bg-card: #1a1a28;
+  --color-bg-card-hover: #222232;
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================
+   Theme: Sunset
+   ============================================ */
+[data-theme="sunset"] {
+  --color-primary: #f97316;
+  --color-primary-hover: #ea580c;
+  --color-primary-light: rgba(249, 115, 22, 0.15);
+  --color-secondary: #be185d;
+  --color-accent: #fb923c;
+  --color-bg: #1a0a0a;
+  --color-bg-elevated: #241212;
+  --color-bg-card: #2e1818;
+  --color-bg-card-hover: #3a2020;
+  --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+/* ============================================
+   Theme: Forest
+   ============================================ */
+[data-theme="forest"] {
+  --color-primary: #22c55e;
+  --color-primary-hover: #16a34a;
+  --color-primary-light: rgba(34, 197, 94, 0.15);
+  --color-secondary: #166534;
+  --color-accent: #4ade80;
+  --color-bg: #0a120a;
+  --color-bg-elevated: #121a12;
+  --color-bg-card: #1a241a;
+  --color-bg-card-hover: #222e22;
+  --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+/* ============================================
+   Theme: Lavender
+   ============================================ */
+[data-theme="lavender"] {
+  --color-primary: #a855f7;
+  --color-primary-hover: #9333ea;
+  --color-primary-light: rgba(168, 85, 247, 0.15);
+  --color-secondary: #7e22ce;
+  --color-accent: #c084fc;
+  --color-bg: #0f0a14;
+  --color-bg-elevated: #18121e;
+  --color-bg-card: #221a2a;
+  --color-bg-card-hover: #2c2234;
+  --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+/* ============================================
+   Theme: Ocean
+   ============================================ */
+[data-theme="ocean"] {
+  --color-primary: #06b6d4;
+  --color-primary-hover: #0891b2;
+  --color-primary-light: rgba(6, 182, 212, 0.15);
+  --color-secondary: #0e7490;
+  --color-accent: #22d3ee;
+  --color-bg: #0a1014;
+  --color-bg-elevated: #0f171c;
+  --color-bg-card: #152028;
+  --color-bg-card-hover: #1c2a34;
+  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+/* ============================================
+   Light Theme
+   ============================================ */
+[data-theme="light"] {
+  --color-primary: #d4a84b;
+  --color-primary-hover: #c49a3e;
+  --color-primary-light: rgba(212, 168, 75, 0.12);
+  --color-secondary: #1e3a5f;
+  --color-accent: #b8942e;
+  --color-bg: #f8f8fa;
+  --color-bg-elevated: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f3f3f5;
+  --color-text: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-muted: #a1a1aa;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 20px rgba(212, 168, 75, 0.2);
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+/* Hide scrollbar for swipeable areas */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   Animation Keyframes
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in { animation: fadeIn var(--transition-base) ease; }
+.animate-slide-up { animation: slideUp var(--transition-base) ease; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-scale-in { animation: scaleIn var(--transition-fast) ease; }
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 25%,
+    var(--color-bg-card-hover) 50%,
+    var(--color-bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Touch action for swipe areas */
+.touch-pan-x {
+  touch-action: pan-x;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+/* Safe area insets for notched devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top, 0);
+}

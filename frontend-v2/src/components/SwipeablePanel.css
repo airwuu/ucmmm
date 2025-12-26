@@ -1,0 +1,126 @@
+.swipeable-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Tab navigation */
+.panel-tabs {
+    display: flex;
+    padding: var(--space-2) var(--space-4);
+    gap: var(--space-2);
+    background: var(--color-bg);
+}
+
+.panel-tab {
+    flex: 1;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.panel-tab:hover {
+    background: var(--color-bg-card-hover);
+    border-color: var(--color-border-hover);
+}
+
+.panel-tab--active {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Viewport */
+.panel-viewport {
+    flex: 1;
+    overflow: hidden;
+    touch-action: pan-y;
+    position: relative;
+}
+
+/* Track */
+.panel-track {
+    display: flex;
+    height: 100%;
+    will-change: transform;
+}
+
+/* Individual panel */
+.panel {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--space-3) var(--space-4);
+}
+
+/* Custom scrollbar for panels */
+.panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.panel::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+}
+
+/* Dot indicators */
+.panel-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--color-bg);
+}
+
+.panel-dot {
+    width: 8px;
+    height: 8px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.panel-dot:hover {
+    background: var(--color-border-hover);
+    transform: scale(1.2);
+}
+
+.panel-dot--active {
+    background: var(--color-primary);
+    width: 24px;
+}
+
+/* Safe area spacing for bottom */
+.panel-dots {
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Desktop - wider panels */
+@media (min-width: 768px) {
+    .panel {
+        padding: var(--space-4) var(--space-8);
+    }
+
+    .panel-tabs {
+        max-width: 500px;
+        margin: 0 auto;
+        width: 100%;
+    }
+}

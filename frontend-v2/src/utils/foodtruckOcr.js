@@ -57,76 +57,18 @@ export function loadOpenCV() {
 }
 
 /**
- * Fetch week images by scraping the dining website
- * Uses Vite proxy to bypass CORS
+ * Fetch week images from backend API
+ * Backend scrapes the dining website and caches results
  */
 export async function fetchWeekImages() {
-    const SOURCE_URL = 'https://dining.ucmerced.edu/retail-services/fork-road';
-
     try {
-        // Fetch via Vite proxy to bypass CORS
-        let html = '';
-        try {
-            const proxyRes = await fetch('/proxy/dining');
-            if (proxyRes.ok) {
-                html = await proxyRes.text();
-            }
-        } catch (err) {
-            console.warn('[OCR] Proxy fetch failed:', err);
+        const res = await fetch(`${API_BASE}/foodtrucks/images`);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
         }
-
-        if (!html) {
-            console.log('[OCR] Could not fetch dining page');
-            return [];
-        }
-
-        // Parse images from HTML
-        const year = new Date().getFullYear();
-        const weeks = [];
-        const seen = new Set();
-
-        // Pattern 1: Range format (month-day-month-day.png)
-        const rangeRegex = /src="([^"]*?(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,2})\.png)"/g;
-        let m;
-        while ((m = rangeRegex.exec(html)) !== null) {
-            const full = m[1];
-            const sm = parseInt(m[2], 10);
-            const sd = parseInt(m[3], 10);
-            const em = parseInt(m[4], 10);
-            const ed = parseInt(m[5], 10);
-            if (seen.has(full)) continue;
-            seen.add(full);
-
-            const start = `${year}-${String(sm).padStart(2, '0')}-${String(sd).padStart(2, '0')}`;
-            const end = `${year}-${String(em).padStart(2, '0')}-${String(ed).padStart(2, '0')}`;
-            const url = full.startsWith('http') ? full : new URL(full, SOURCE_URL).toString();
-            weeks.push({ url, start, end, label: `${sm}/${sd} - ${em}/${ed}` });
-        }
-
-        // Pattern 2: Single date format (month-day.png)
-        const singleRegex = /src="([^"]*?\/page\/images\/(\d{1,2})-(\d{1,2})\.png)"/g;
-        while ((m = singleRegex.exec(html)) !== null) {
-            const full = m[1];
-            if (full.includes('logo') || full.includes('icon')) continue;
-
-            const sm = parseInt(m[2], 10);
-            const sd = parseInt(m[3], 10);
-            if (seen.has(full)) continue;
-            seen.add(full);
-
-            const startDate = new Date(year, sm - 1, sd);
-            const endDate = new Date(startDate);
-            endDate.setDate(endDate.getDate() + 6);
-
-            const start = `${year}-${String(sm).padStart(2, '0')}-${String(sd).padStart(2, '0')}`;
-            const end = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
-            const url = full.startsWith('http') ? full : new URL(full, SOURCE_URL).toString();
-            weeks.push({ url, start, end, label: `${sm}/${sd}` });
-        }
-
-        weeks.sort((a, b) => a.start.localeCompare(b.start));
-        console.log('[OCR] Scraped weeks:', weeks.length, weeks);
-        return weeks;
+        const data = await res.json();
+        console.log('[OCR] Week images from API:', data.weeks?.length || 0);
+        return data.weeks || [];
     } catch (err) {
         console.error('[OCR] fetchWeekImages error:', err);
         return [];
@@ -251,18 +193,10 @@ export async function runOcr(imageUrl, onProgress = () => { }, cvReady = false) 
     const Tesseract = await import('tesseract.js');
     onProgress(0.1, 'Loading image...');
 
-    // Try to load image via proxy first (for CORS)
+    // Use direct URL - most images from dining.ucmerced.edu allow CORS
+    // If CORS fails, image will still load in img element with crossOrigin='anonymous'
     let imageTarget = imageUrl;
-    try {
-        const proxied = await fetch(`/proxy/image?url=${encodeURIComponent(imageUrl)}`);
-        if (proxied.ok) {
-            const blob = await proxied.blob();
-            imageTarget = URL.createObjectURL(blob);
-            console.log('[OCR] Using proxy image');
-        }
-    } catch (err) {
-        console.warn('[OCR] Proxy failed, using direct URL', err);
-    }
+    console.log('[OCR] Loading image:', imageUrl);
 
     onProgress(0.2, 'Processing image...');
 

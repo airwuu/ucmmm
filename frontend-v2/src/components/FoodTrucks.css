@@ -1,0 +1,163 @@
+.food-trucks {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.food-trucks__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.food-trucks__title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.food-trucks__source {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg-card);
+    border-radius: var(--radius-full);
+}
+
+/* Day selector */
+.day-selector {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.day-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: var(--space-2) var(--space-1);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    position: relative;
+}
+
+.day-btn:hover {
+    background: var(--color-bg-card-hover);
+}
+
+.day-btn--active {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+}
+
+.day-btn__abbr {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.day-btn--active .day-btn__abbr {
+    color: var(--color-primary);
+}
+
+.day-btn__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-primary);
+}
+
+/* Content */
+.food-trucks__content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.food-trucks__loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.food-trucks__error,
+.food-trucks__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-8);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* Truck list */
+.food-trucks__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.truck-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.truck-group__time {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.truck-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    transition: all var(--transition-fast);
+}
+
+.truck-card:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-card-hover);
+}
+
+.truck-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.truck-card__name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.truck-card__cuisine {
+    font-size: 0.8125rem;
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.truck-card__location {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.truck-card__location svg {
+    flex-shrink: 0;
+}

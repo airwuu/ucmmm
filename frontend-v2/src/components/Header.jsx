@@ -12,7 +12,7 @@ export default function Header({ onThemeClick, onInfoClick }) {
                     <img src="/bobcat.png" alt="" className="header-logo" />
                     <div className="header-title">
                         <h1>ucmmm</h1>
-                        <span className="header-subtitle text-xs">you see m-m-m</span>
+                        <span className="header-subtitle text-xs">you see mmm~ :P</span>
                     </div>
                 </div>
 

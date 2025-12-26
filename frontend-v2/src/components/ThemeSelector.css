@@ -173,3 +173,104 @@
     color: var(--color-bg);
     flex-shrink: 0;
 }
+
+[data-theme-preview="custom"] .theme-option__color {
+    background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%);
+}
+
+/* Custom color picker */
+.custom-colors {
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.custom-colors__back {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.custom-colors__back:hover {
+    opacity: 0.8;
+}
+
+.custom-colors__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.color-picker label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.color-picker__input {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.color-picker__input input[type="color"] {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    padding: 0;
+    background: transparent;
+}
+
+.color-picker__input input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker__input input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--radius-sm);
+}
+
+.color-picker__input span {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.custom-colors__done {
+    padding: var(--space-3);
+    background: var(--color-primary);
+    color: var(--color-bg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.custom-colors__done:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}

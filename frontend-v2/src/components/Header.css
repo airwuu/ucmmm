@@ -42,7 +42,13 @@
     color: var(--color-text-muted);
 }
 
-.theme-toggle {
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.header-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,11 +62,11 @@
     transition: all var(--transition-fast);
 }
 
-.theme-toggle:hover {
+.header-btn:hover {
     background: var(--color-bg-card-hover);
     transform: scale(1.05);
 }
 
-.theme-toggle:active {
+.header-btn:active {
     transform: scale(0.95);
 }

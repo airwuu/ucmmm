@@ -193,10 +193,13 @@ export async function runOcr(imageUrl, onProgress = () => { }, cvReady = false) 
     const Tesseract = await import('tesseract.js');
     onProgress(0.1, 'Loading image...');
 
-    // Use direct URL - most images from dining.ucmerced.edu allow CORS
-    // If CORS fails, image will still load in img element with crossOrigin='anonymous'
-    let imageTarget = imageUrl;
-    console.log('[OCR] Loading image:', imageUrl);
+    // Use Proxy URL to bypass CORS
+    // Assumes your proxy route is set up at /proxy/image or similar
+    // Note: Adjust '/proxy/image' if your route path in proxy.ts is different (e.g., just '/proxy')
+    const proxyUrl = `${API_BASE}/proxy/image?url=${encodeURIComponent(imageUrl)}`;
+    let imageTarget = proxyUrl;
+
+    console.log('[OCR] Loading image via proxy:', imageTarget);
 
     onProgress(0.2, 'Processing image...');
 
@@ -235,7 +238,11 @@ export async function runOcr(imageUrl, onProgress = () => { }, cvReady = false) 
 async function runGridOcr(cv, Tesseract, imageUrl, onProgress) {
     // Load image into canvas
     const imgEl = new Image();
+
+    // IMPORTANT: crossOrigin must be anonymous for OpenCV to read the canvas pixels
+    // This works now because the Proxy Worker sends the correct Access-Control-Allow-Origin headers
     imgEl.crossOrigin = 'anonymous';
+
     await new Promise((res, rej) => {
         imgEl.onload = () => res();
         imgEl.onerror = () => rej(new Error('Image load failed'));
@@ -489,3 +496,4 @@ async function runGridOcr(cv, Tesseract, imageUrl, onProgress) {
 }
 
 export { parseOcrTable };
+

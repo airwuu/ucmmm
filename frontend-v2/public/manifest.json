@@ -1,0 +1,29 @@
+{
+    "name": "ucmmm - UCM Menu",
+    "short_name": "ucmmm",
+    "description": "UC Merced dining hall menus, food trucks, and item availability - crowdsourced by students",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1a1a2e",
+    "theme_color": "#1a1a2e",
+    "icons": [
+        {
+            "src": "/bobcat.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/bobcat-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/bobcat-180.png",
+            "sizes": "180x180",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

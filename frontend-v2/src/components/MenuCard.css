@@ -58,7 +58,7 @@
 .status-badge--link {
     gap: var(--space-1);
     background: var(--color-bg-card);
-    color: var(--color-text-secondary);
+    color: var(--color-secondary);
     text-decoration: none;
     border: 1px solid var(--color-border);
     transition: all var(--transition-fast);

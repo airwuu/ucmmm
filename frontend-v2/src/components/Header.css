@@ -42,7 +42,7 @@
 
 .header-subtitle {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--color-secondary);
 }
 
 .header-actions {

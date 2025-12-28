@@ -9,7 +9,7 @@ import './MenuCard.css';
 
 const OFFICIAL_URLS = {
     pav: 'https://uc-merced-the-pavilion.widget.eagle.bigzpoon.com/menus',
-    dc: 'https://uc-merced-yablokoff-wallace-dining-center.widget.eagle.bigzpoon.com/menus',
+    dc: 'https://uc-merced-the-pavilion.widget.eagle.bigzpoon.com/menus',
 };
 
 export default function MenuCard({ location, name, toastHandlers }) {

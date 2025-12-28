@@ -8,16 +8,22 @@
     "theme_color": "#1a1a2e",
     "icons": [
         {
-            "src": "/bobcat.png",
-            "sizes": "512x512",
+            "src": "/bobcat-logo.png",
+            "sizes": "1024x1024",
             "type": "image/png",
             "purpose": "any"
+        },
+        {
+            "src": "/bobcat-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
         },
         {
             "src": "/bobcat-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
             "src": "/bobcat-180.png",

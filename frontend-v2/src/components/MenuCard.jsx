@@ -77,11 +77,7 @@ export default function MenuCard({ location, name, toastHandlers }) {
                     <div className="menu-card__loading">
                         <div className="skeleton skeleton--text" />
                         <div className="skeleton skeleton--text skeleton--short" />
-                        <div className="skeleton skeleton--items">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="skeleton skeleton--item" />
-                            ))}
-                        </div>
+                        <div className="skeleton skeleton--text" />
                     </div>
                 ) : error ? (
                     <div className="menu-card__error">

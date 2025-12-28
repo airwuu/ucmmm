@@ -5,14 +5,15 @@ const CUSTOM_COOKIE_NAME = 'UCMMM_CUSTOM_COLORS';
 const COOKIE_DAYS = 30;
 
 export const THEMES = [
-    { id: 'catgold', name: 'Catgold', description: 'UC Merced colors' },
+    { id: 'custom', name: 'Custom', description: 'Your colors' },
+    { id: 'og', name: 'OG UCMMM', description: 'Classic v1 vibes' },
+    { id: 'catgold', name: 'Dark', description: 'UC Merced gold' },
+    { id: 'light', name: 'Light', description: 'Classic light' },
     { id: 'midnight', name: 'Midnight', description: 'Deep blue' },
     { id: 'sunset', name: 'Sunset', description: 'Warm orange' },
     { id: 'forest', name: 'Forest', description: 'Nature greens' },
     { id: 'lavender', name: 'Lavender', description: 'Soft purple' },
     { id: 'ocean', name: 'Ocean', description: 'Cool cyan' },
-    { id: 'light', name: 'Light', description: 'Classic light' },
-    { id: 'custom', name: 'Custom', description: 'Your colors' },
 ];
 
 // Default custom colors
@@ -38,8 +39,8 @@ function setCookie(name, value, days) {
 }
 
 function getSystemTheme() {
-    if (typeof window === 'undefined') return 'catgold';
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'catgold';
+    if (typeof window === 'undefined') return 'og';
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'og';
 }
 
 function applyCustomColors(colors) {
@@ -116,7 +117,7 @@ export function useTheme() {
         const handler = (e) => {
             // Only auto-switch if no saved preference
             if (!getCookie(COOKIE_NAME)) {
-                const newTheme = e.matches ? 'light' : 'catgold';
+                const newTheme = e.matches ? 'light' : 'og';
                 setThemeState(newTheme);
                 document.documentElement.setAttribute('data-theme', newTheme);
             }

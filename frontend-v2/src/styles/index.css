@@ -3,7 +3,9 @@
    ============================================ */
 
 /* CSS Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -37,18 +39,56 @@ body {
 /* ============================================
    Typography Scale
    ============================================ */
-.text-xs { font-size: 0.75rem; line-height: 1rem; }
-.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-.text-base { font-size: 1rem; line-height: 1.5rem; }
-.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-.text-2xl { font-size: 1.5rem; line-height: 2rem; }
-.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
 
-.font-medium { font-weight: 500; }
-.font-semibold { font-weight: 600; }
-.font-bold { font-weight: 700; }
-.font-extrabold { font-weight: 800; }
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-extrabold {
+  font-weight: 800;
+}
 
 /* ============================================
    Theme Variables - Default (Catgold/UC Merced)
@@ -58,25 +98,25 @@ body {
   --color-primary: #d4a84b;
   --color-primary-hover: #c49a3e;
   --color-primary-light: rgba(212, 168, 75, 0.15);
-  
+
   --color-secondary: #1e3a5f;
   --color-accent: #e8c547;
-  
+
   /* Backgrounds */
   --color-bg: #0f0f14;
   --color-bg-elevated: #1a1a22;
   --color-bg-card: #22222c;
   --color-bg-card-hover: #2a2a36;
-  
+
   /* Text */
   --color-text: #f5f5f7;
   --color-text-secondary: #a1a1aa;
   --color-text-muted: #71717a;
-  
+
   /* Borders */
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-hover: rgba(255, 255, 255, 0.15);
-  
+
   /* Status colors */
   --color-available: #22c55e;
   --color-available-bg: rgba(34, 197, 94, 0.15);
@@ -86,20 +126,20 @@ body {
   --color-out-bg: rgba(239, 68, 68, 0.15);
   --color-closed: #6b7280;
   --color-closed-bg: rgba(107, 114, 128, 0.15);
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 20px rgba(212, 168, 75, 0.3);
-  
+
   /* Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -110,12 +150,12 @@ body {
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
-  
+
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 350ms ease;
-  
+
   /* Z-index scale */
   --z-base: 0;
   --z-dropdown: 100;
@@ -205,6 +245,22 @@ body {
 }
 
 /* ============================================
+   Theme: OG UCMMM (Classic v1)
+   ============================================ */
+[data-theme="og"] {
+  --color-primary: #deaf9d;
+  --color-primary-hover: #c99a8a;
+  --color-primary-light: rgba(222, 175, 157, 0.15);
+  --color-secondary: #4a3730;
+  --color-accent: #daa900;
+  --color-bg: #1c1b1d;
+  --color-bg-elevated: #232224;
+  --color-bg-card: #2a282b;
+  --color-bg-card-hover: #353335;
+  --shadow-glow: 0 0 20px rgba(222, 175, 157, 0.3);
+}
+
+/* ============================================
    Light Theme
    ============================================ */
 [data-theme="light"] {
@@ -213,8 +269,8 @@ body {
   --color-primary-light: rgba(212, 168, 75, 0.12);
   --color-secondary: #1e3a5f;
   --color-accent: #b8942e;
-  --color-bg: #f8f8fa;
-  --color-bg-elevated: #ffffff;
+  --color-bg: #f4f4f4;
+  --color-bg-elevated: #fafafa;
   --color-bg-card: #ffffff;
   --color-bg-card-hover: #f3f3f5;
   --color-text: #18181b;
@@ -263,29 +319,47 @@ body {
    Animation Keyframes
    ============================================ */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(10px);
   }
-  to { 
+
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes scaleIn {
@@ -293,25 +367,35 @@ body {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-.animate-fade-in { animation: fadeIn var(--transition-base) ease; }
-.animate-slide-up { animation: slideUp var(--transition-base) ease; }
-.animate-pulse { animation: pulse 2s ease-in-out infinite; }
-.animate-scale-in { animation: scaleIn var(--transition-fast) ease; }
+.animate-fade-in {
+  animation: fadeIn var(--transition-base) ease;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--transition-base) ease;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-fast) ease;
+}
 
 /* Skeleton loading */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-card) 25%,
-    var(--color-bg-card-hover) 50%,
-    var(--color-bg-card) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--color-bg-card) 25%,
+      var(--color-bg-card-hover) 50%,
+      var(--color-bg-card) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);

@@ -5,22 +5,25 @@ const CUSTOM_COOKIE_NAME = 'UCMMM_CUSTOM_COLORS';
 const COOKIE_DAYS = 30;
 
 export const THEMES = [
-    { id: 'catgold', name: 'Catgold', description: 'UC Merced colors' },
-    { id: 'midnight', name: 'Midnight', description: 'Deep blue' },
-    { id: 'sunset', name: 'Sunset', description: 'Warm orange' },
-    { id: 'forest', name: 'Forest', description: 'Nature greens' },
-    { id: 'lavender', name: 'Lavender', description: 'Soft purple' },
-    { id: 'ocean', name: 'Ocean', description: 'Cool cyan' },
-    { id: 'light', name: 'Light', description: 'Classic light' },
     { id: 'custom', name: 'Custom', description: 'Your colors' },
+    { id: 'og', name: 'original', description: 'classic theme from v1' },
+    { id: 'catgold', name: 'dark', description: 'UC Merced gold' },
+    { id: 'light', name: 'light', description: 'Classic light' },
+    { id: 'midnight', name: 'midnight', description: 'Deep blue' },
+    { id: 'sunset', name: 'sunset', description: 'Warm orange' },
+    { id: 'forest', name: 'forest', description: 'Nature greens' },
+    { id: 'lavender', name: 'lavender', description: 'Soft purple' },
+    { id: 'ocean', name: 'ocean', description: 'Cool cyan' },
 ];
 
 // Default custom colors
 const DEFAULT_CUSTOM = {
     background: '#1a1a2e',
-    foreground: '#16213e',
+    elevated: '#1f1f3a',
+    card: '#252545',
     text: '#eaeaea',
     accent: '#e94560',
+    secondary: '#0f3460',
 };
 
 function getCookie(name) {
@@ -38,26 +41,71 @@ function setCookie(name, value, days) {
 }
 
 function getSystemTheme() {
-    if (typeof window === 'undefined') return 'catgold';
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'catgold';
+    if (typeof window === 'undefined') return 'og';
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'og';
 }
 
-function applyCustomColors(colors) {
+// Helper to lighten/darken a hex color
+function adjustColor(hex, amount) {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+    const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
+// Helper to create rgba from hex
+function hexToRgba(hex, alpha) {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Migrate old custom colors format to new format
+function migrateCustomColors(colors) {
+    const migrated = { ...DEFAULT_CUSTOM, ...colors };
+
+    // Migrate old 'foreground' to new 'elevated' and 'card' if needed
+    if (colors.foreground && !colors.elevated) {
+        migrated.elevated = colors.foreground;
+    }
+    if (colors.foreground && !colors.card) {
+        migrated.card = colors.foreground;
+    }
+
+    return migrated;
+}
+
+function applyCustomColors(rawColors) {
+    const colors = migrateCustomColors(rawColors);
     const root = document.documentElement;
+
+    // Core colors
     root.style.setProperty('--color-bg', colors.background);
-    root.style.setProperty('--color-bg-elevated', colors.foreground);
-    root.style.setProperty('--color-bg-card', colors.foreground);
+    root.style.setProperty('--color-bg-elevated', colors.elevated);
+    root.style.setProperty('--color-bg-card', colors.card);
     root.style.setProperty('--color-text', colors.text);
     root.style.setProperty('--color-primary', colors.accent);
+    root.style.setProperty('--color-secondary', colors.secondary);
+
+    // Auto-calculated derived colors
+    root.style.setProperty('--color-bg-card-hover', adjustColor(colors.card, 15));
+    root.style.setProperty('--color-primary-hover', adjustColor(colors.accent, -20));
+    root.style.setProperty('--color-primary-light', hexToRgba(colors.accent, 0.15));
+    root.style.setProperty('--color-accent', adjustColor(colors.accent, 30));
+    root.style.setProperty('--color-shadow-glow', `0 0 20px ${hexToRgba(colors.accent, 0.3)}`);
 }
 
 function clearCustomColors() {
     const root = document.documentElement;
-    root.style.removeProperty('--color-bg');
-    root.style.removeProperty('--color-bg-elevated');
-    root.style.removeProperty('--color-bg-card');
-    root.style.removeProperty('--color-text');
-    root.style.removeProperty('--color-primary');
+    const props = [
+        '--color-bg', '--color-bg-elevated', '--color-bg-card', '--color-bg-card-hover',
+        '--color-text', '--color-primary', '--color-primary-hover', '--color-primary-light',
+        '--color-secondary', '--color-accent', '--color-shadow-glow'
+    ];
+    props.forEach(prop => root.style.removeProperty(prop));
 }
 
 export function useTheme() {
@@ -70,7 +118,10 @@ export function useTheme() {
     const [customColors, setCustomColorsState] = useState(() => {
         try {
             const saved = getCookie(CUSTOM_COOKIE_NAME);
-            if (saved) return JSON.parse(decodeURIComponent(saved));
+            if (saved) {
+                const parsed = JSON.parse(decodeURIComponent(saved));
+                return migrateCustomColors(parsed);
+            }
         } catch { }
         return DEFAULT_CUSTOM;
     });
@@ -116,7 +167,7 @@ export function useTheme() {
         const handler = (e) => {
             // Only auto-switch if no saved preference
             if (!getCookie(COOKIE_NAME)) {
-                const newTheme = e.matches ? 'light' : 'catgold';
+                const newTheme = e.matches ? 'light' : 'og';
                 setThemeState(newTheme);
                 document.documentElement.setAttribute('data-theme', newTheme);
             }

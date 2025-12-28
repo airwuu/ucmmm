@@ -8,12 +8,17 @@
     overflow-x: hidden;
 }
 
-/* Limit width on larger screens */
+/* Mobile-only: Limit width on tablet screens (when not in desktop mode) */
 @media (min-width: 768px) {
-    .app {
+    .app:not(.app--desktop) {
         max-width: 600px;
         margin: 0 auto;
         border-left: 1px solid var(--color-border);
         border-right: 1px solid var(--color-border);
     }
+}
+
+/* Desktop mode: Full width layout */
+.app--desktop {
+    max-width: 100%;
 }

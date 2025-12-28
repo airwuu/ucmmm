@@ -178,6 +178,10 @@
     background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%);
 }
 
+[data-theme-preview="og"] .theme-option__color {
+    background: linear-gradient(135deg, #deaf9d 0%, #1c1b1d 100%);
+}
+
 /* Custom color picker */
 .custom-colors {
     padding: var(--space-3);

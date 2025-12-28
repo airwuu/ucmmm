@@ -42,7 +42,7 @@
 
 .header-subtitle {
     font-size: 0.75rem;
-    color: var(--color-text-muted);
+    color: var(--color-secondary);
 }
 
 .header-actions {
@@ -72,4 +72,12 @@
 
 .header-btn:active {
     transform: scale(0.95);
+}
+
+/* Desktop: Wider header */
+@media (min-width: 1024px) {
+    .header-content {
+        max-width: 1800px;
+        padding: var(--space-3) var(--space-6);
+    }
 }

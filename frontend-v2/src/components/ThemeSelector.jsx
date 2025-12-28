@@ -69,15 +69,28 @@ export default function ThemeSelector({ isOpen, onClose }) {
                             </div>
 
                             <div className="color-picker">
-                                <label htmlFor="fg-color">Foreground</label>
+                                <label htmlFor="elevated-color">Elevated</label>
                                 <div className="color-picker__input">
                                     <input
                                         type="color"
-                                        id="fg-color"
-                                        value={customColors.foreground}
-                                        onChange={(e) => handleColorChange('foreground', e.target.value)}
+                                        id="elevated-color"
+                                        value={customColors.elevated}
+                                        onChange={(e) => handleColorChange('elevated', e.target.value)}
                                     />
-                                    <span>{customColors.foreground}</span>
+                                    <span>{customColors.elevated}</span>
+                                </div>
+                            </div>
+
+                            <div className="color-picker">
+                                <label htmlFor="card-color">Card</label>
+                                <div className="color-picker__input">
+                                    <input
+                                        type="color"
+                                        id="card-color"
+                                        value={customColors.card}
+                                        onChange={(e) => handleColorChange('card', e.target.value)}
+                                    />
+                                    <span>{customColors.card}</span>
                                 </div>
                             </div>
 
@@ -104,6 +117,19 @@ export default function ThemeSelector({ isOpen, onClose }) {
                                         onChange={(e) => handleColorChange('accent', e.target.value)}
                                     />
                                     <span>{customColors.accent}</span>
+                                </div>
+                            </div>
+
+                            <div className="color-picker">
+                                <label htmlFor="secondary-color">Secondary Text</label>
+                                <div className="color-picker__input">
+                                    <input
+                                        type="color"
+                                        id="secondary-color"
+                                        value={customColors.secondary}
+                                        onChange={(e) => handleColorChange('secondary', e.target.value)}
+                                    />
+                                    <span>{customColors.secondary}</span>
                                 </div>
                             </div>
                         </div>

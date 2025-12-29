@@ -6,12 +6,12 @@ Thank you for your interest in contributing to ucmmm! This guide will help you g
 
 ```
 ucmmm/
-├── frontend-v1/    # Legacy Next.js frontend (maintenance mode)
+├── frontend-v1/    # Legacy Next.js frontend (maintenance mode, please ignore)
 ├── frontend-v2/    # Active Vite + React frontend (accepting contributions)
 └── README.md
 ```
 
-> **Note:** Active development is focused on `frontend-v2`. The `frontend-v1` directory contains the legacy frontend and is in maintenance mode.
+> **Note:** Active development is focused on `frontend-v2`. The `frontend-v1` directory contains the legacy frontend and is preserved for reference purposes. The migration from `frontend-v1` to `frontend-v2` could still have some lost features. Please report any missing features to the GitHub issue tracker.
 
 ## Getting Started
 
@@ -22,33 +22,35 @@ ucmmm/
 
 ### Setup
 
-1. **Fork the repository** on GitHub
+1. **Fork the repository** on GitHub 
 
-2. **Clone your fork**
+2. Open your favorite IDE and use the terminal for the following steps
+
+3. **Clone your fork**
    ```bash
    git clone https://github.com/YOUR_USERNAME/ucmmm.git
    cd ucmmm
    ```
 
-3. **Install dependencies** for frontend-v2
+4. **Install dependencies** for frontend-v2 after changing into the correct directory
    ```bash
    cd frontend-v2
    npm install
    ```
 
-4. **Start the development server**
+5. **Start the development server** 
    ```bash
    npm run dev
    ```
 
-5. **Open** http://localhost:5173 in your browser
+6. **Open** http://localhost:3000 in your browser (or whatever port the dev server is running on, the terminal will tell you)
 
 ## How to Contribute
 
 ### Reporting Bugs
 
 1. Search [existing issues](https://github.com/airwuu/ucmmm/issues) to avoid duplicates
-2. Create a new issue with:
+2. Try and create a new issue with:
    - Clear, descriptive title
    - Steps to reproduce
    - Expected vs actual behavior
@@ -57,7 +59,6 @@ ucmmm/
 
 ### Suggesting Features
 
-1. Check if the feature is already in our [roadmap](README.md#feature-checklist)
 2. Open a new issue describing:
    - The problem you're trying to solve
    - Your proposed solution
@@ -89,7 +90,7 @@ ucmmm/
 - Keep PRs focused on a single change
 - Include screenshots for UI changes
 - Link related issues using `Fixes #123` or `Closes #123`
-- Ensure the build passes before requesting review
+- Ensure the build passes before requesting review please
 
 ## Code Style
 

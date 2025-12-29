@@ -31,6 +31,8 @@ Core features:
 
 ## Feature Demos
 
+> ### Click on any demo to view a gif of it in action:
+
 <details>
 <summary><b>📱 All Dining Options in One Place (v2)</b></summary>
 <br>
@@ -70,7 +72,7 @@ Core features:
 <details open>
 <summary> <b> Comparison against official menu site (v1)</b> </summary>
 <br>
-  Here is a simple speed demo of <b>ucmmm-v1</b> vs the official menu site, where a user wants to see what is offered at the Dining Center and Pavilion on a <b>Friday Night Dinner</b> before committing to a location.
+  Here is a simple speed demo of <b>ucmmm (v1)</b> vs the official menu site, where a user wants to see what is offered at the Dining Center and Pavilion on a <b>Friday Night Dinner</b> before committing to a location.
   <br>
   <br>
   <img src="https://github.com/user-attachments/assets/9aeeebdb-fb46-4612-9f64-d006c89aa7fc" 
@@ -85,6 +87,8 @@ Core features:
   <ul>
     <li>23 seconds and 9 clicks to view both menus. That is assuming you can scan those paragraphs at lightning speed</li>
   </ul>
+
+  Since upgrading to version 2, it is even faster and easier to view the menu than what is showcased here on version 1 of ucmmm!
 </details>
 <!-- <details>
 <summary> <h3> More info </h3> </summary>
@@ -110,8 +114,8 @@ See [frontend-v2/README.md](frontend-v2/README.md) for detailed documentation.
 
 ```
 ucmmm/
-├── frontend-v1/    # Legacy Next.js frontend (archived for reference)
-├── frontend-v2/    # Active Vite + React frontend
+├── frontend-v1/    # Legacy frontend (archived for reference)
+├── frontend-v2/    # Active new frontend
 ├── CONTRIBUTING.md # Contribution guidelines
 └── README.md
 ```
@@ -121,17 +125,25 @@ ucmmm is still under active development by UCM students. There are still plenty 
 
 ### Feature checklist
 
-- [x] Dynamically display menu items
-- [x] Crowd sourced reporting
-- [ ] Scheduled cron jobs to populate DB
-- [ ] Add crowd sourced menu items
-- [ ] View multiple days/meal services
-- [x] Display Food trucks (OCR-powered schedule extraction)
-- [ ] Allergen Information
-- [x] Line Size Estimations
-- [ ] Ice Machine Detection
+- [x] Dynamically display menu items with relative timestamps
+- [x] Crowd sourced reporting on missing items
 - [x] Theme Picker/customizer
+- [x] Display Food trucks (OCR-powered extraction)
+- [ ] Allergen Information
+- [ ] View multiple days/meal services for that week
+
+
+
+
+Postponed:
+- [ ] Line Size Estimations
+- [ ] Ice Machine Detection
+- [ ] Add crowd sourced menu items (users can report what is NOT on the menu)
+- - [ ] Content filtering for crowd sourced menu items
+
 
 ## Contributing
 
 We welcome contributions from everyone! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started.
+
+If there are any features you would like to see added, please open an issue on this repository! 

@@ -23,7 +23,7 @@ const DEFAULT_CUSTOM = {
     card: '#252545',
     text: '#eaeaea',
     accent: '#e94560',
-    secondary: '#0f3460',
+    secondary: '#b0c4ddff',
 };
 
 function getCookie(name) {

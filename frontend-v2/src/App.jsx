@@ -13,7 +13,7 @@ import { ToastContainer } from './components/Toast';
 import './App.css';
 
 export default function App() {
-    const { theme } = useTheme();
+    useTheme();
     const [themeOpen, setThemeOpen] = useState(false);
     const [infoOpen, setInfoOpen] = useState(false);
     const { toasts, removeToast, showSuccess, showUndo } = useToast();
@@ -23,7 +23,7 @@ export default function App() {
     const toastHandlers = { showSuccess, showUndo };
 
     return (
-        <div className={`app ${isDesktop ? 'app--desktop' : ''}`} data-theme={theme}>
+        <div className={`app ${isDesktop ? 'app--desktop' : ''}`}>
             <Header
                 onThemeClick={() => setThemeOpen(true)}
                 onInfoClick={() => setInfoOpen(true)}

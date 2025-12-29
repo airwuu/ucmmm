@@ -1,6 +1,8 @@
 # ucmmm frontend v2
 
-The active frontend for ucmmm, built with Vite and React.
+The active frontend for ucmmm, built with Vite and React. There is also a legacy frontend in the `frontend-v1` directory that you can reference and even run to see the original design.
+
+These documents should help you get started with the codebase. I apologize for the mess, but there is a lot of AI generated comments in most files *in addition* to this document that should help contextualize what is happening. 
 
 ## Tech Stack
 
@@ -85,16 +87,17 @@ The layout switch happens in `App.jsx`:
 
 A touch-friendly navigation component for mobile users.
 
-**How it works:**
+**UI/UX Design:**
 - Contains three panels: Pavilion, Dining Center, and Food Trucks
 - Users can swipe left/right to navigate between panels
 - Tab buttons at the top provide quick navigation
 - Dot indicators at the bottom show current position
-- Auto-selects the appropriate panel on load (if Pavilion is closed but DC is open, starts on DC)
+- Smooth CSS transitions with cubic-bezier easing
+
 
 **Key features:**
-- Touch gesture detection with configurable threshold (60px default)
-- Smooth CSS transitions with cubic-bezier easing
+- Auto-selects the appropriate panel on load (if Pavilion is closed but DC is open, starts on DC)
+- Touch gesture detection with configurable threshold (60px default) This hopefully prevents accidental swiping, but more feedback is welcome.
 - Visual drag feedback while swiping
 
 ---
@@ -129,24 +132,26 @@ Users can create their own theme by adjusting 6 color values:
 
 Displays the menu for a dining location (Pavilion or Dining Center).
 
-**Features:**
-- Shows current meal period and hours
+**Necessary Features:**
+- Shows current meal period and hours (ex: "Breakfast: 7:30 AM - 10:30 AM")
 - Groups menu items by station
-- Displays "Closed" overlay when location is not serving
-- Shows next opening time when closed
-- Links to official menu site
+- Displays "Closed" overlay when location is not serving and disables reporting menu items
+- Shows next opening time when closed in relative time
+- Easy hyperlink to official menu site for users to cross reference
 
 **Menu item reporting (crowdsourcing):**
+
+The objective is to make reporting as easy as possible, so people are more inclined to do so:
 - Tap any menu item to report it as missing/unavailable
 - Tap again to undo the report
-- Reports are sent to the backend and contribute to crowd-sourced data
-- Toast notifications confirm actions with undo option
+- Reports are sent to the backend via API calls
+- Toast notifications provide feedback. Also, note that we haven't implemented a rate limiter yet, so this UI clutter technically limits the rate of spam reporting. It's hard to spam reports when your whole screen is full of notifications.
 
 ---
 
 ### FoodTrucks
 
-Displays the weekly food truck schedule with OCR capabilities.
+Displays the weekly food truck schedule and has OCR capabilities.
 
 **Data flow:**
 1. First tries to fetch cached data from backend
@@ -162,7 +167,7 @@ Displays the weekly food truck schedule with OCR capabilities.
 
 **OCR process:**
 1. Preloads OpenCV.js in background on component mount
-2. Fetches schedule image from UC Merced dining website
+2. Fetches schedule image from UC Merced dining website. This is done via a proxy server on the backend to avoid CORS issues. 
 3. Preprocesses image with OpenCV for better accuracy
 4. Runs Tesseract.js OCR to extract text
 5. Parses tabular data into structured format
@@ -195,6 +200,20 @@ This project uses vanilla CSS with:
 - CSS custom properties (variables) for theming in `src/styles/index.css`
 - Component-scoped CSS files (e.g., `MenuCard.jsx` + `MenuCard.css`)
 - Mobile-first responsive design
+
+## Backend Context
+
+The backend API is a Cloudflare worker and is built with Hono.js. It provides the following endpoints:
+
+- `GET /api/menu` – Fetch menu data for a specific location
+- `GET /api/foodtrucks` – Fetch food truck schedule
+- `POST /api/report` – Submit menu item report
+- `GET /api/cache` – Fetch cached data
+- `POST /api/cache` – Submit new cache data
+
+As an interface to interact with the api, the `utils/api.js` file should help you reverse engineer the api and how it is used. 
+
+This backend api is stored on a separate public Github repository called ucmmmdb, but still needs to be polished and moved over to this monorepo. Feel free to fork it and start your own CF worker + D1 database if you would like to try changing anything on the backend, it should take about 30 minutes.  
 
 ## Contributing
 

@@ -348,3 +348,7 @@
 .truck-card__location svg {
     flex-shrink: 0;
 }
+.food-trucks .day-selector { gap: 4px; }
+.food-trucks .day-btn { min-width: 0; }
+.food-trucks .day-btn__abbr { font-size: 0.65rem; }
+.week-selector__menu { max-height: 260px; overflow-y: auto; }

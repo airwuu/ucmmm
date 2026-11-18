@@ -1,269 +1,133 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { fetchFoodTrucks, getCurrentDay } from '../utils/api';
-import { runOcr, fetchWeekImages, submitOcrResults, parseOcrTable } from '../utils/foodtruckOcr';
+import { fetchFoodTrucks, getCurrentDay, getPDTDate } from '../utils/api';
+import { runOcr, fetchWeekImages, submitOcrResults } from '../utils/foodtruckOcr';
+import { DAYS, DAY_NAMES as NAMES, defaultWeek } from '../utils/foodtruck/parse';
 import './FoodTrucks.css';
 
-const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri'];
-const DAY_NAMES = {
-    mon: 'Monday',
-    tue: 'Tuesday',
-    wed: 'Wednesday',
-    thu: 'Thursday',
-    fri: 'Friday',
-};
+const DAY_NAMES = Object.fromEntries(DAYS.map((day, index) => [day, NAMES[index]]));
 
-/**
- * Food trucks panel with OCR capability
- */
 export default function FoodTrucks() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // OCR state
     const [ocrLoading, setOcrLoading] = useState(false);
     const [ocrProgress, setOcrProgress] = useState(0);
     const [ocrMessage, setOcrMessage] = useState('');
     const [ocrError, setOcrError] = useState(null);
     const [ocrRan, setOcrRan] = useState(false);
     const [weekImages, setWeekImages] = useState([]);
-
-    // OpenCV preloading state
-    const [cvReady, setCvReady] = useState(false);
-    const cvLoadAttempted = useRef(false);
-
-    // Preload OpenCV.js on component mount (non-blocking)
-    useEffect(() => {
-        if (cvLoadAttempted.current) return;
-        cvLoadAttempted.current = true;
-
-        // Check if already loaded
-        if (window.cv && window.cv.imread) {
-            setCvReady(true);
-            return;
-        }
-
-        const existingScript = document.getElementById('opencv-js');
-        if (existingScript) {
-            const waitReady = () => {
-                if (window.cv && window.cv.imread) {
-                    setCvReady(true);
-                    return;
-                }
-                setTimeout(waitReady, 100);
-            };
-            waitReady();
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.id = 'opencv-js';
-        script.src = 'https://docs.opencv.org/4.x/opencv.js';
-        script.async = true;
-        script.onload = () => {
-            const waitReady = () => {
-                if (window.cv && window.cv.imread) {
-                    console.log('[FoodTrucks] OpenCV ready');
-                    setCvReady(true);
-                    return;
-                }
-                setTimeout(waitReady, 100);
-            };
-            waitReady();
-        };
-        script.onerror = () => console.warn('[FoodTrucks] OpenCV failed to load');
-        document.head.appendChild(script);
-    }, []);
-
-    // Get today as 3-letter abbreviation, default to 'mon' if weekend
-    const getTodayAbbr = () => {
-        const fullDay = getCurrentDay();
-        const abbr = fullDay.slice(0, 3);
-        if (abbr === 'sat' || abbr === 'sun') return 'mon';
-        return abbr;
-    };
-
-    const [selectedDay, setSelectedDay] = useState(getTodayAbbr);
-    const [selectedWeekIndex, setSelectedWeekIndex] = useState(null); // null = current/latest week
+    const [selectedWeek, setSelectedWeek] = useState(null);
     const [weekMenuOpen, setWeekMenuOpen] = useState(false);
+    const [selectedDay, setSelectedDay] = useState(() => getCurrentDay().slice(0, 3));
+    const request = useRef(0);
+    const scan = useRef(null);
+    const today = getCurrentDay().slice(0, 3);
+    const date = getPDTDate(new Date());
+    const noncurrent = selectedWeek && !(selectedWeek.start <= date && selectedWeek.end >= date);
 
-    // Get currently selected week image
-    const selectedWeek = useMemo(() => {
-        if (!weekImages.length) return null;
-        if (selectedWeekIndex !== null && weekImages[selectedWeekIndex]) {
-            return weekImages[selectedWeekIndex];
-        }
-        // Default to latest week
-        return weekImages[weekImages.length - 1];
-    }, [weekImages, selectedWeekIndex]);
-
-
-
-    // Initial data load
-    useEffect(() => {
-        let cancelled = false;
-
-        async function load() {
-            setLoading(true);
-            setError(null);
-            try {
-                const result = await fetchFoodTrucks();
-                if (cancelled) return;
-
-                console.log('[FoodTrucks] Data result:', result);
-                setData(result);
-
-                // Also try to fetch week images for potential OCR
-                const weeks = await fetchWeekImages();
-                if (cancelled) return;
-
-                console.log('[FoodTrucks] Week images:', weeks);
-                setWeekImages(weeks);
-
-                // If no cached data, show message but DON'T auto-run OCR
-                // User can click reload button to trigger OCR manually
-                if (result.source !== 'cache' || !result.data || result.data.length === 0) {
-                    console.log('[FoodTrucks] No cached data - user can click reload to run OCR');
-                }
-            } catch (err) {
-                if (cancelled) return;
-                console.error('[FoodTrucks] Load error:', err);
-                setError(err.message);
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            }
-        }
-        load();
-
-        return () => { cancelled = true; };
+    const beginRequest = useCallback(() => {
+        scan.current?.abort();
+        scan.current = null;
+        setData(null);
+        setError(null);
+        setOcrError(null);
+        setOcrRan(false);
+        setOcrLoading(false);
+        return ++request.current;
     }, []);
 
-    // Run OCR on a week image
-    const runFoodTruckOcr = useCallback(async (weekImage) => {
-        if (!weekImage?.url) {
-            setOcrError('No image available');
-            return;
-        }
-
+    const runFoodTruckOcr = useCallback(async (week, id) => {
+        if (!week?.url) { setOcrError('No schedule image available.'); return; }
+        const controller = new AbortController();
+        scan.current = controller;
+        setLoading(false);
         setOcrLoading(true);
         setOcrProgress(0);
-        setOcrMessage('Starting...');
-        setOcrError(null);
-
+        setOcrMessage('Starting…');
+        const active = () => request.current === id && !controller.signal.aborted;
         try {
-            const result = await runOcr(weekImage.url, (progress, message) => {
-                setOcrProgress(progress);
-                setOcrMessage(message || '');
-            }, cvReady);
-
-            if (result && Array.isArray(result) && result.length > 0) {
-                // Parse OCR results into entries
-                const entries = parseOcrTable(result, weekImage.start);
-                console.log('[FoodTrucks] OCR parsed entries:', entries.length);
-
-                if (entries.length > 0) {
-                    // Submit to backend cache
-                    setOcrMessage('Saving to cache...');
-                    const submitResult = await submitOcrResults(weekImage.start, entries, weekImage.url);
-                    console.log('[FoodTrucks] Submit result:', submitResult);
-
-                    // Convert entries to display format
-                    const displayData = entries.map(e => ({
-                        week_start: weekImage.start,
-                        day: e.day,
-                        truck_name: e.truck,
-                        start_time: e.start,
-                        end_time: e.end,
-                        location: null,
-                        cuisine: null
-                    }));
-
-                    setData({ source: 'ocr', data: displayData });
-                }
-            } else if (result?.rawText) {
-                console.log('[FoodTrucks] OCR returned raw text only');
-                setOcrError('Could not parse table structure');
-            }
-
+            const result = await runOcr(week.url, (progress, message) => {
+                if (active()) { setOcrProgress(progress); setOcrMessage(message); }
+            }, { signal: controller.signal });
+            if (!active()) return;
+            setData({ source: 'ocr', data: result.entries.map(entry => ({
+                week_start: week.start, day: entry.day, truck_name: entry.truck,
+                start_time: entry.start, end_time: entry.end,
+            })) });
             setOcrRan(true);
+            setError(null);
+            if (result.warnings.length) {
+                setOcrError(`Partial scan: ${result.warnings.join(' ')} Results were not saved.`);
+            } else if (result.entries.length) {
+                setOcrMessage('Saving schedule…');
+                try { await submitOcrResults(week.start, result.entries, week.url, controller.signal); }
+                catch (err) { if (active()) setOcrError(err.message); }
+            }
         } catch (err) {
-            console.error('[FoodTrucks] OCR error:', err);
-            setOcrError(err.message);
+            if (active()) setOcrError(err.message);
         } finally {
-            setOcrLoading(false);
-            setOcrProgress(1);
-            setOcrMessage('');
+            if (active()) { setOcrLoading(false); setOcrMessage(''); scan.current = null; }
         }
-    }, [cvReady]);
+    }, []);
 
-    // Manual reload handler
-    const handleReload = useCallback(() => {
-        if (ocrLoading) return; // Already running
-
-        if (weekImages.length > 0) {
-            runFoodTruckOcr(weekImages[0]);
-        } else if (data?.image_url) {
-            // Fallback to image from main response
-            runFoodTruckOcr({ url: data.image_url, start: data.week_start });
+    const loadWeek = useCallback(async (week, id, autoScan) => {
+        const result = await fetchFoodTrucks(week?.start);
+        if (request.current !== id) return;
+        if (result.source === 'cache' && result.data?.length) {
+            setData(result);
+            setLoading(false);
+        } else if (autoScan && week) {
+            await runFoodTruckOcr(week, id);
         } else {
-            setOcrError('No schedule image available');
+            if (result.source === 'error') setError(result.error || 'Schedule service unavailable.');
+            setLoading(false);
         }
-    }, [weekImages, data, ocrLoading, runFoodTruckOcr]);
+    }, [runFoodTruckOcr]);
 
-    // Handler to select a week - fetches from cache first, OCR as fallback
-    const handleSelectWeek = useCallback(async (index) => {
-        setSelectedWeekIndex(index);
-        setWeekMenuOpen(false);
-
-        const week = weekImages[index];
-        if (!week) return;
-
-        // First try to fetch from cache
+    const load = useCallback(async () => {
+        const id = beginRequest();
         setLoading(true);
         try {
-            const result = await fetchFoodTrucks(week.start);
-            console.log('[FoodTrucks] Fetched week:', week.start, result);
-
-            if (result.source === 'cache' && result.data && result.data.length > 0) {
-                // Cache hit!
-                setData(result);
-                setLoading(false);
-                return;
-            }
+            const weeks = await fetchWeekImages();
+            if (request.current !== id) return;
+            setWeekImages(weeks);
+            const week = defaultWeek(weeks, getPDTDate(new Date()));
+            setSelectedWeek(week);
+            await loadWeek(week, id, false);
         } catch (err) {
-            console.warn('[FoodTrucks] Cache fetch failed:', err);
+            if (request.current !== id) return;
+            setError(err.message);
+            setLoading(false);
         }
-        setLoading(false);
+    }, [beginRequest, loadWeek]);
 
-        // No cache, run OCR
-        runFoodTruckOcr(week);
-    }, [weekImages, runFoodTruckOcr]);
+    useEffect(() => {
+        load();
+        return () => { request.current++; scan.current?.abort(); };
+    }, [load]);
 
-    // Today's day as abbreviation
-    const today = (() => {
-        const fullDay = getCurrentDay();
-        const abbr = fullDay.slice(0, 3);
-        if (abbr === 'sat' || abbr === 'sun') return null;
-        return abbr;
-    })();
+    const handleReload = () => {
+        if (ocrLoading) return;
+        if (!selectedWeek) { load(); return; }
+        const id = beginRequest();
+        runFoodTruckOcr(selectedWeek, id);
+    };
 
-    // Filter entries for selected day
-    const entries = useMemo(() => {
-        if (!data?.data) return [];
-        return data.data.filter(e => e.day === selectedDay);
-    }, [data, selectedDay]);
+    const handleSelectWeek = index => {
+        const week = weekImages[index];
+        setWeekMenuOpen(false);
+        setSelectedWeek(week);
+        const id = beginRequest();
+        setLoading(true);
+        loadWeek(week, id, true);
+    };
 
-    // Group by location/time
+    const entries = useMemo(() => data?.data?.filter(entry => entry.day === selectedDay) || [], [data, selectedDay]);
     const groupedEntries = useMemo(() => {
         const groups = {};
         entries.forEach(entry => {
-            const time = entry.start_time
-                ? `${formatTime(entry.start_time)} - ${formatTime(entry.end_time)}`
-                : 'Schedule TBD';
-            if (!groups[time]) groups[time] = [];
-            groups[time].push(entry);
+            const time = entry.start_time ? `${formatTime(entry.start_time)} - ${formatTime(entry.end_time)}` : 'Schedule TBD';
+            (groups[time] ||= []).push(entry);
         });
         return groups;
     }, [entries]);
@@ -340,7 +204,7 @@ export default function FoodTrucks() {
                             <line x1="8" y1="2" x2="8" y2="6" />
                             <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
-                        <span>{selectedWeek?.label || 'Select Week'}</span>
+                        <span>{selectedWeek ? `${selectedWeek.start} – ${selectedWeek.end}` : 'Select Week'}{noncurrent ? ' (not current week)' : ''}</span>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={weekMenuOpen ? 'rotated' : ''}>
                             <polyline points="6 9 12 15 18 9" />
                         </svg>
@@ -351,7 +215,7 @@ export default function FoodTrucks() {
                             {weekImages.map((week, index) => (
                                 <button
                                     key={week.start}
-                                    className={`week-selector__item ${selectedWeekIndex === index ? 'week-selector__item--active' : ''}`}
+                                    className={`week-selector__item ${selectedWeek?.start === week.start ? 'week-selector__item--active' : ''}`}
                                     onClick={() => handleSelectWeek(index)}
                                 >
                                     {week.label}
@@ -367,11 +231,11 @@ export default function FoodTrucks() {
                 {DAYS.map(day => (
                     <button
                         key={day}
-                        className={`day-btn ${selectedDay === day ? 'day-btn--active' : ''} ${day === today ? 'day-btn--today' : ''}`}
+                        className={`day-btn ${selectedDay === day ? 'day-btn--active' : ''} ${day === today && !noncurrent ? 'day-btn--today' : ''}`}
                         onClick={() => setSelectedDay(day)}
                     >
                         <span className="day-btn__abbr">{day.toUpperCase()}</span>
-                        {day === today && <span className="day-btn__dot" />}
+                        {day === today && !noncurrent && <span className="day-btn__dot" />}
                     </button>
                 ))}
             </div>
@@ -385,7 +249,9 @@ export default function FoodTrucks() {
                     </div>
                 ) : error ? (
                     <div className="food-trucks__error">
-                        <p>Failed to load food trucks</p>
+                        <p>{error}</p>
+                        <button className="retry-btn" onClick={load}>Retry loading</button>
+                        {selectedWeek && <button className="retry-btn" onClick={handleReload}>Scan selected week</button>}
                     </div>
                 ) : entries.length === 0 ? (
                     <div className="food-trucks__empty">
@@ -395,8 +261,8 @@ export default function FoodTrucks() {
                             <circle cx="5.5" cy="18.5" r="2.5" />
                             <circle cx="18.5" cy="18.5" r="2.5" />
                         </svg>
-                        <p>No food trucks on {DAY_NAMES[selectedDay]}</p>
-                        {!ocrRan && weekImages.length > 0 && (
+                        <p>{ocrLoading ? 'Reading schedule…' : data && !ocrError ? `No food trucks on ${DAY_NAMES[selectedDay]}` : ocrError ? 'Schedule scan incomplete or unavailable' : 'Schedule not loaded'}</p>
+                        {!ocrRan && !ocrLoading && weekImages.length > 0 && (
                             <button className="retry-btn" onClick={handleReload}>
                                 Run OCR to load schedule
                             </button>
